@@ -1,18 +1,27 @@
-import pytest
 import partner
+import os
+import pytest
 
-def test_config0 ():
-    fname = '/home/marshall/dev/partner/tests/files/notexist.csv'
+FIXTURE_DIR = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)),
+    'files',
+)
+
+@pytest.mark.datafiles(os.path.join(FIXTURE_DIR, 'notexist.csv'))
+def test_config0 (datafiles):
+    fname = datafiles[0]
     with pytest.raises(Exception):
         pairs = partner.readConfig(fname)
 
-def test_config1 ():
-    fname = '/home/marshall/dev/partner/tests/files/empty_config.csv'
+@pytest.mark.datafiles(os.path.join(FIXTURE_DIR, 'empty_config.csv'))
+def test_config1 (datafiles):
+    fname = datafiles[0]
     pairs = partner.readConfig(fname)
     assert [] == pairs
 
-def test_config2 ():
-    fname = '/home/marshall/dev/partner/tests/files/config.csv'
+@pytest.mark.datafiles(os.path.join(FIXTURE_DIR, 'config.csv'))
+def test_config2 (datafiles):
+    fname = datafiles[0]
     pairs = partner.readConfig(fname)
     assert "David Marshall" == pairs[0][0]
     assert "Paula Nieman" == pairs[0][1]
