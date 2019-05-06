@@ -125,7 +125,7 @@ def readConfig (fname):
     lines = file.readlines();
     pairs = []
     for line in lines:
-        pair = line.split('|')
+        pair = line.strip().split('|')
         pairs.append(pair)
     return pairs
 
@@ -202,4 +202,5 @@ def main ():
         groups = generateGroups(students, pairsToAvoid)
         printGroups(groups)
 
-main()
+if __name__ == '__main__':
+    main()
