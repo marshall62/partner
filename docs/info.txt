@@ -1,0 +1,26 @@
+Linux instructions for Project set up
+
+Make sure your python has pip included:
+    sudo apt update
+    sudo apt install python3-pip
+    pip3 --version
+Install python-venv
+    sudo apt-get update
+    sudo apt-get python3-venv
+Make the virtual environment for the project
+    python3 -m venv venv
+Add dependencies (from requirements.txt) to the venv
+    . venv/bin/activate
+    Do which python and verify that it is version 3+ and is coming from within venv
+    pip install -r requirements.txt
+    deactivate
+Use PyCharm Community Edition to set up project:
+    Create project to use the venv/bin/python3
+    Create a runtime config that uses:
+        name: flask
+        script: venv/bin/flask
+        parameters: run
+        working dir: project root
+
+Run | flask  should correctly launch the webapp running on port 5000
+Test in browser: http://localhost:5000/hello
