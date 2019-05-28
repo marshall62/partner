@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+    <head>
+        <title>{{ title }} - PartnerGen</title>
+    </head>
+
+    <body>
+     <form>
+        <table class="table">
+            <thead>
+            <tr><th>Student</th><th>Absent</th><th>Attended Other</th></tr>
+            </thead>
+            <tbody>
+            {% for person in the_class %}
+                <tr><td>{% if person.student.nickname is defined %}
+                     {{ person.student.nickname }}
+                    {% else %}
+                    {{ person.student.fname }}
+                    {% endif %}
+                    {{ person.student.lname }}
+                    </td>
+                    <td>{% if person.status  == 'A' %}
+                        <input type="checkbox" checked></input>
+                        {% else %}
+                        <input type="checkbox"></input>
+                        {% endif %}
+                    </td>
+                    <td>{% if person.status is defined and  person.status  != 'A' %}
+                        <input type="checkbox" checked></input>
+                        {% else %}
+                        <input type="checkbox"></input>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+         <button type="button" class="btn btn-primary">Submit</button>
+     </form>
+    </body>
+{% endblock %}
