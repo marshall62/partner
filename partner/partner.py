@@ -3,6 +3,7 @@ import urllib.request
 import random
 import time
 import csv
+from partner.Person import Person
 
 GROUP_SIZE = 2
 
@@ -33,39 +34,6 @@ config = folder + "pairs2avoid.csv"
 
 class MissingDateHeaderException (Exception):
     pass
-
-class Person:
-
-    def __init__ (self, fname, lname, nick_name, id):
-        self.fname = fname
-        self.lname = lname
-        self.nick_name = nick_name
-        self.id = id
-
-    def equals (self, other):
-        return self.fname.upper() == other.fname.upper() and \
-               self.lname.upper() == other.lname.upper()
-
-    def fuzzy_equals (self, other):
-        if self.lname.upper() != other.lname.upper():
-            return False
-        if self.nick_name == other.nick_name:
-            return True
-        elif self.fname == other.fname:
-            return True
-        elif self.nick_name == other.fname:
-            return True
-        elif self.fname == other.nick_name:
-            return True
-        else:
-            return False
-
-    def to_csv (self):
-        return self.fname + "," + self.lname + "," + self.id
-
-    def __str__ (self):
-        return (self.nick_name if self.nick_name else self.fname) + " " + self.lname
-
 
 
 class Group:

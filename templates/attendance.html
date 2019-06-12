@@ -5,27 +5,28 @@
     </head>
 
     <body>
-     <form>
+     <form action="" method="post" novalidate>
+         {{ form.hidden_tag() }}
         <table class="table">
             <thead>
             <tr><th>Student</th><th>Absent</th><th>Attended Other</th></tr>
             </thead>
             <tbody>
-            {% for person in the_class %}
-                <tr><td>{% if person.student.nickname is defined %}
-                     {{ person.student.nickname }}
+            {% for student in the_class %}
+                <tr><td>{% if student.nick_name is not none %}
+                     {{ student.nick_name }}
                     {% else %}
-                    {{ person.student.fname }}
+                    {{ student.fname }}
                     {% endif %}
-                    {{ person.student.lname }}
+                    {{ student.lname }}
                     </td>
-                    <td>{% if person.status  == 'A' %}
+                    <td>{% if student.status  == 'A' %}
                         <input type="checkbox" checked></input>
                         {% else %}
                         <input type="checkbox"></input>
                         {% endif %}
                     </td>
-                    <td>{% if person.status is defined and  person.status  != 'A' %}
+                    <td>{% if student.status is not none and status  != 'A' %}
                         <input type="checkbox" checked></input>
                         {% else %}
                         <input type="checkbox"></input>

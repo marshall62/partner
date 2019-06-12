@@ -1,6 +1,9 @@
 from partner import app
-from flask import render_template, flash, redirect, url_for
-from partner.forms import LoginForm
+from partner.partner import Person
+from partner import util
+from flask import request, render_template, flash, redirect, url_for
+from partner.forms import LoginForm, AttendanceForm, AttendanceStudentForm
+from partner.ClassMgr import ClassMgr
 
 # a simple page that says hello
 @app.route('/hello')
@@ -14,18 +17,22 @@ def index():
 
 @app.route('/attendance', methods=['GET', 'POST'])
 def attendance():
-    cl = [{'student': {'fname': 'David', 'lname': 'Marshall', 'nickname': 'Davo'}
-                 },
-                {'student': {'fname': 'Paula', 'lname': 'Nieman'},
-                 'status': 'A'
-                 },
-                {'student': {'fname': 'Walden', 'lname': 'Marshall'}
-                 },
-                {'student': {'fname': 'Jonathan', 'lname': 'Marshall'},
-                 'status': 'W'
-                 }
-                ]
-    return render_template('attendance.html', title='Attendance', the_class=cl)
+    cl_id = request.args.get('classId')
+    dt = request.args.get('date') # yymmdd format
+    yy = dt[0:2]
+    mm = dt[2:4]
+    dd = dt[4:]
+    dt = mm + '/' + dd + '/' + yy
+    cm = ClassMgr()
+    cm.get_class(cl_id, dt)
+    if request.method == 'POST':
+        num_studs = int(request.form.get('numStudents'))
+        statuses = [request.form.get('status-'+str(i)) for i in range(num_studs)]
+        cm.update_attendance(statuses)
+        cm.write_file(cl_id,dt)
+    class_list = [s.to_dict() for s in cm.students]
+    form = AttendanceForm()
+    return render_template('attendance2.html', title='Attendance', dt=dt, form=form, class_list=class_list, num_students=len(class_list))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
