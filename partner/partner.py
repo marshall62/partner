@@ -66,6 +66,12 @@ class Group:
             s += m.__str__() + "..."
         return s[0:-3]    # eliminate trailing ...
 
+    def to_dict (self):
+        d = {}
+        d['group'] = self
+        d['members'] = [p.to_dict() for p in self.members]
+        return d
+
     def to_csv (self):
         line = ""
         for p in self.members:

@@ -38,6 +38,9 @@ class Person:
     def attended_other (self):
         return self.status and self.status != 'A'
 
+    def is_present (self):
+        return not (self.is_absent() or self.attended_other())
+
     def to_csv (self):
         return self.fname + "," + self.lname + "," + self.id
 

@@ -14,8 +14,11 @@ class AttendanceStudentForm (FlaskForm):
     absent = BooleanField()
     attendedOther = BooleanField()
 
+class AttendanceGroupForm (FlaskForm):
+    members = FieldList(AttendanceStudentForm)
+
 
 class AttendanceForm(FlaskForm):
     students = FieldList(FormField(AttendanceStudentForm))
-    # date = DateField(format='%m/%d/%Y',validators=(validators.Optional(),))
+    groups = FieldList(FormField(AttendanceGroupForm))
     submit = SubmitField()
