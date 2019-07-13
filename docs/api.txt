@@ -1,0 +1,3 @@
+/attendence?rosterId=X&date=YYYYMMDD
+ gives back a JSON list of Student objects.
+    -  Issue:  don't need a full list of attendance record

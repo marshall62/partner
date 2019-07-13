@@ -1,4 +1,3 @@
-from forms import AttendanceStudentForm
 class Person:
 
     def __init__ (self, fname, lname, nick_name=None, id=None):

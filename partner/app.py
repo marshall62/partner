@@ -1,13 +1,19 @@
 import logging
 import logging.handlers
 from flask.logging import default_handler
-from partner import app
+from partner import app, db
+
+from partner.models import Student, Roster
+
+@app.shell_context_processor
+def make_shell_context():
+    return {'db': db, 'Student': Student, 'Roster': Roster}
 
 #  This is the main app which is run by flask.  The Flask object is bound to app in the matcher package __init__.py
 def app_init():
 
     # first get config settings for all matcher apps regardless of environment
-    app.config.from_pyfile('config.cfg')
+    # app.config.from_pyfile('config.cfg')
     # now override using settings for this environment
     # app.config.from_pyfile('../instance/config.cfg')
     app.logger.removeHandler(default_handler)

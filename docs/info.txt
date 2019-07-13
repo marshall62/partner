@@ -24,3 +24,21 @@ Use PyCharm Community Edition to set up project:
 
 Run | flask  should correctly launch the webapp running on port 5000
 Test in browser: http://localhost:5000/hello
+
+
+------------------
+SQLLite associated stuff.
+pip install flask-sqlalchemy
+pip install flask-migrate
+cd partner/partner
+export FLASK_APP=partner
+flask db init # generates a db migration
+cd ..
+python3
+import partner
+partner.db.create_all()
+from partner.models import Student
+s = Student(first_name='dave', last_name='M')
+partner.db.session.add(s)
+partner.db.session.commit() (may need to rollback() first)
+Student.query.all()

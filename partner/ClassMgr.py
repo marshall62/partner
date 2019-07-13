@@ -1,7 +1,7 @@
 import csv
 import os
 from partner.partner import MissingDateHeaderException
-from Person import Person
+from partner.Person import Person
 
 class ClassMgr:
     name_map = {"first": "First name", "nick": "Nick name", "last": "Last name", "id": "ID number"}
@@ -91,4 +91,15 @@ class ClassMgr:
         for i, s in enumerate(self.students):
             status = statuses[i]
             s.status = status if status else None
+
+
+
+    def load_roster_to_db (self, filename):
+        with open(filename, newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            headers = reader.fieldnames
+            students = []
+            for row in reader:
+                person = self.get_person_from_row(row)
+                students.append(person)
 
