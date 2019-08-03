@@ -28,5 +28,16 @@ def is_today (dt):
 def today ():
     return datetime.date.today()
 
+def get_current_year ():
+    return today().year
+
+def get_current_term ():
+    t = today() #type: datetime.date
+    if t.month in [1,2,3,4,5]:
+        return 'spring'
+    else:
+        return 'fall'
+
+
 def to_mdy (date):
     return date.strftime("%m/%d/%Y")

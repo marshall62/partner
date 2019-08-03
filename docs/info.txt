@@ -31,12 +31,14 @@ SQLLite associated stuff.
 pip install flask-sqlalchemy
 pip install flask-migrate
 cd partner/partner
-export FLASK_APP=partner
+export FLASK_APP=partner.py
 flask db init # generates a db migration
-cd ..
-python3
-import partner
-partner.db.create_all()
+flask db migrate
+flask db upgrade
+
+Delete the migration dir and the partner.db if needing complete reset
+
+enter python within venv
 from partner.models import Student
 s = Student(first_name='dave', last_name='M')
 partner.db.session.add(s)

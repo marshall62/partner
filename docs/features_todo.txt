@@ -1,0 +1,11 @@
+Add a phonetic field for first name pronunciation.  Should be able to add in the roster page and save with save attendance button.
+
+Save CSV spreadsheet should produce a page of CSV that can be copy/pasted.
+
+Pairs to avoid might be page that I can edit and save.
+
+Provide login/users and put on server elsewhere.
+
+Use real db.
+
+Would be cool if I could get link to student face image to provide this in roster.
