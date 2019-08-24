@@ -31,8 +31,15 @@ SQLLite associated stuff.
 pip install flask-sqlalchemy
 pip install flask-migrate
 cd partner/partner
+
 export FLASK_APP=partner.py
 flask db init # generates a db migration
+flask db migrate
+flask db upgrade
+
+Steps to migrate db if I add a new column:
+enter virtual env
+cd partner/partner
 flask db migrate
 flask db upgrade
 
@@ -44,3 +51,8 @@ s = Student(first_name='dave', last_name='M')
 partner.db.session.add(s)
 partner.db.session.commit() (may need to rollback() first)
 Student.query.all()
+
+SQLite CLI operations
+
+$sqlite3 partner.db
+> select * from student

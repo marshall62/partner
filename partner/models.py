@@ -1,12 +1,24 @@
 from datetime import datetime
 from partner import db
 
+class Section(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    year = db.Column(db.Integer, index=True)
+    term = db.Column(db.String(12), index=True)
+    number = db.Column(db.Integer, index=True)
+    title = db.Column(db.String(12), index=True)
+    start_date = db.Column(db.Date)
+
 class Roster(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    # TODO get rid of these fields
     year = db.Column(db.Integer, index=True)
     lab_num = db.Column(db.Integer, index=True)
     meeting_time =  db.Column(db.String(12), index=True)
     term = db.Column(db.String(12), index=True)
+    start_date = db.Column(db.Date)
+    # end of TODO
+    section_id = db.Column(db.Integer, db.ForeignKey('section.id'))
     students = db.relationship('Student', backref='student', lazy='dynamic')
 
     def to_dict (self):
@@ -46,10 +58,23 @@ class Student(db.Model):
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'))
     status = ''
 
+    @property
+    def pic_url (self):
+        return "https://www.smith.edu/load.php?pic=" + self.onecard_id
+
+    @property
+    def preferred_fname (self):
+        if self.nick_name:
+            return self.nick_name
+        else:
+            return self.first_name
+
     def to_dict (self):
         return {
             'id': self.id,
             'onecard_id': self.onecard_id,
+            'pic_url': self.pic_url,
+            'preferred_fname': self.preferred_fname,
             'first_name': self.first_name,
             'nick_name': self.nick_name,
             'last_name': self.last_name

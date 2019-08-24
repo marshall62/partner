@@ -1,4 +1,5 @@
 from partner import models
+import datetime
 
 class AttendanceMgr:
 
@@ -50,4 +51,46 @@ class AttendanceMgr:
                 date_entry = models.AttendanceEntry(date=date, value='P')
                 student.attendance.append(date_entry)
             student.status = date_entry.value
+
+    @staticmethod
+    def get_term_dates (roster, end_date):
+        d1 = roster.start_date
+        incr = datetime.timedelta(weeks=1)
+        dates = [d1]
+        d = d1
+        while d < end_date:
+            d = d + incr
+            dates.append(d)
+        return dates
+
+    @staticmethod
+    def generate_attendance (roster, date):
+        dates = AttendanceMgr.get_term_dates(roster, date)
+        date_strings = [d.strftime('%m/%d/%Y') for d in dates]
+
+        out = 'Student Name, ' + ','.join(date_strings) + '\n'
+        for student in roster.students:
+            row = student.first_name + ' ' + student.last_name
+            for d in dates:
+                e = AttendanceMgr.get_student_attendance(student, d)
+                if not e or e == 'P':
+                    row += ','
+                else:
+                    row += ',' + e
+            out += row + '\n'
+
+        return out
+
+
+        # return [d.strftime('%m/%d/%Y') for d in dates], rows
+
+
+    @staticmethod
+    def get_student_attendance (student, date):
+        for entry in student.attendance:
+            if entry.date == date:
+                return entry.value
+        return None
+
+
 

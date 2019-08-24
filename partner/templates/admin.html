@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+{% block style %}
+<style>
+
+body{
+  background-color: #dedeff;
+}
+
+
+
+</style>
+{% endblock %}
+{% block pagejs %}
+<script language="JavaScript">
+
+<!--    var lab_info = {{ lab_info }};-->
+<!--    var dd = {{ dd }};-->
+
+    function dropdown_update (inputId, buttonId, inputVal, buttonVal) {
+        $('#' + inputId).val(inputVal);
+        $('#' + buttonId).html(buttonVal);
+    }
+
+    function lab_update (meeting_time) {
+        $('#labNum').html('Lab ' + lab_info[meeting_time]);
+    }
+
+    function generate_csv () {
+        // submit to /roster-csv with meeting_time and term params as GET which will yield a downloadable csv file
+        $('#rosterForm').attr('action', '/roster-csv');
+        $('#rosterForm').attr('method', 'get');
+        $('#rosterForm').submit();
+    }
+
+    function add_section_row () {
+        $('#sectionsTable').append('<tr><td><input name="labNums[]" type="text"/></td> <td><input name="labTitles[]" type="text"/></td></tr>');
+    }
+
+
+    $(function () {
+        $(document).ready(function () {
+            bsCustomFileInput.init()
+        });
+        $('#addSectionButton').click(add_section_row);
+        $('#csvButton').click(generate_csv);
+        $('#yearpick').datepicker({
+        minViewMode: 2,
+       format: 'yyyy'
+     });
+        $('#datepick').datepicker({}).on('changeDate',
+        function(e) {
+<!--            document.getElementById('lab-date-form').submit();-->
+        });
+    });
+
+</script>
+{% endblock %}
+{% block content %}
+<head>
+    <title>{{ title }} - PartnerGen Admin</title>
+</head>
+
+<body>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#rosterTab">Roster Setup</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sectionTab">Sections Setup</a>
+        </li>
+    </ul>
+    <div class="container">
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div id="rosterTab" class="container tab-pane active"><br>
+                <form id='rosterForm' method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="tab" value="roster"/>
+                    <p id="message"></p>
+                    <div class="row">
+                        <div class="col-2">
+                            <input id='yearpick2' name='year' class="date form-control"
+                                   value="{% if section %} {{ section.year }} {% else %} {{year}} {% endif %}" placeholder="Year" style="width: 100px;" type="text">
+                        </div>
+                        <div class="col-2">
+                            <input id="term2" name="term" value='{{ term }}' type="hidden">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="termButton2"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {% if section %}
+                                    {{ section.term }}
+                                    {% else %}
+                                        {% if term == 'fall' %}fall{% endif %}
+                                        {% if term == 'spring' %}spring{% endif %}
+                                    {% endif %}
+
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item"
+                                       onclick="dropdown_update('term2', 'termButton2', 'spring', 'spring');"
+                                       href="#">spring</a>
+                                    <a class="dropdown-item" onclick="dropdown_update('term2', 'termButton2', 'fall', 'fall');"
+                                       href="#">fall</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <input id="labInput" name="labId" value='' type="hidden">
+                        <div class="col-4">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle form-control" type="button" id="labButton"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {% if section %} {{ section.number }}: {{ section.title }}
+                                    {% else %}
+                                        {% if sections|length == 0 %} No Sections {% else %}Select Lab {% endif %}
+                                    {% endif %}
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    {% for section in sections %}
+                                    <a class="dropdown-item"
+                                       onclick="dropdown_update('labInput','labButton', '{{section.id}}', '{{section.number}}: {{section.title}}');"
+                                       href="#">{{section.number}}: {{section.title}}</a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label for='datepick'>First Class</label>
+                            <div class="input-group date">
+                                <input id="datepick" name="startDate" value='{% if section %} {{ section.start_date }} {% else %} {{ dt }} {% endif %}' type="text" class="form-control">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-6">
+                            <div class="input-group mt-3">
+                                <div class="custom-file">
+                                    <input id="xlsxFile" name='file' type="file" class="custom-file-input">
+                                    <label class="custom-file-label" for="xlsxFile">Choose xlsx file</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button id='updateButton' class='btn btn-secondary' type="submit">Update Roster</button>
+                    <button id='csvButton' class="btn btn-secondary" type="button"> CSV Spreadsheet</button>
+                </form>
+            </div>
+
+
+            <div id="sectionTab" class="container tab-pane fade"><br>
+                <form method="POST">
+                    <input type="hidden" name="tab" value="section"/>
+                    <div class="row">
+                        <div class="col-2">
+                            <input id='yearpick' name='year' class="date form-control" value="{{year}}" placeholder="Year" style="width: 100px;" type="text">
+                        </div>
+                        <div class="col-2">
+                            <input id="termInput" name="term" value='{{ term }}' type="hidden">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="termButton"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {% if term == 'fall' %}fall{% endif %}
+                                    {% if term == 'spring' %}spring{% endif %}
+
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item"
+                                       onclick="dropdown_update('termInput', 'termButton', 'spring', 'spring');"
+                                       href="#">spring</a>
+                                    <a class="dropdown-item" onclick="dropdown_update('termInput', 'termButton', 'fall', 'fall');"
+                                       href="#">fall</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br><br>
+                    <button id="addSectionButton" class="btn btn-secondary" type="button">+</button>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Section Number</th>
+                            <th>Title</th>
+                        </tr>
+                        </thead>
+                        <tbody id="sectionsTable">
+                        {% for section in sections %}
+                            <tr>
+                                <td><input name='labNums[]' value='{{section.number}}' type="text"/></td>
+                                <td><input name='labTitles[]' value='{{section.title}}' type="text"/></td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td><input name='labNums[]' type="text"/></td>
+                            <td><input name='labTitles[]' type="text"/></td>
+                        </tr>
+
+                        </tbody>
+                    </table><br>
+                    <button class="btn btn-secondary" type="submit">Save</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</body>
+{% endblock %}

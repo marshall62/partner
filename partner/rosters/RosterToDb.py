@@ -2,23 +2,30 @@ from partner.models import Roster, Student
 from partner import db
 import csv
 import re
+from partner import util
+
 
 name_map = {"studentName": "Student Name",  "oneCardId": "ID"}
+spreadsheet_headers = ['Student Name','ID'] #others come after these but we dont care about them
 
 class RosterToDb:
+
+    @property
+    def roster (self):
+        return self.roster
     '''
     Read a CSV file that has no attendance info and create a roster and its students in the db.
     If the class/roster already is in the db, remove its students and reload with the new list of students
     '''
 
-    def __init__ (self, lab_num, meeting_time, year, semester, csv_file):
+    def __init__ (self, section_id, csv_file):
         try:
             db.session.no_autoflush
-            self.roster = Roster.query.filter_by(lab_num=lab_num, meeting_time=meeting_time, year=year, term=semester).first()
+            self.roster = Roster.query.filter_by(section_id=section_id).first()
             if self.roster:
                 self.remove_all_students()
             else:
-                self.roster = Roster(lab_num=lab_num, meeting_time=meeting_time, year=year, term=semester)
+                self.roster = Roster(section_id=section_id)
                 db.session.add(self.roster)
             self.read_file(csv_file)
             db.session.commit()
@@ -32,11 +39,17 @@ class RosterToDb:
             self.roster.students.remove(student)
 
 
-
+     # TODO skip the junk at the beginning and get to the row of headers.
     def read_file (self, csv_file):
-        # The first line of the CSV file has the headers which become the keys of a dict for each row read in
+        # The first n lines of the csv file are junk and we need to skip until we see the lines following "Summary Class List"
+        # following this will be a row of headers and then the data rows.
         with open(csv_file, newline='') as csvfile:
-            reader = csv.DictReader(csvfile)
+            reader = csv.DictReader(csvfile, spreadsheet_headers)
+            while True:
+                line = next(csvfile)
+                if line.startswith('Student Name'):
+                    break
+
             for row in reader:
                 student = self.get_student_from_row(row)
                 self.roster.students.append(student)
@@ -73,8 +86,9 @@ class RosterToDb:
         return fname, lname, nname
 
 def test ():
-    RosterToDb(lab_num=1, meeting_time='wed1', year=2019, semester='fall', csv_file='/home/david/dev/python/partner/tests/files/simple_new_classlist.csv')
+    RosterToDb(lab_num=1, meeting_time='wed1',
+               year=2019, semester='fall', start_date=util.mdy_to_date('05/10/2019'), csv_file='/home/david/dev/python/partner/tests/files/simple_new_classlist.csv')
 
-test()
+#test()
 
 

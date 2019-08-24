@@ -38,6 +38,16 @@ def get_current_term ():
     else:
         return 'fall'
 
+def mdy_to_date (mdy):
+    m,d,y = mdy.split('/')
+    return datetime.date(month=int(m), day=int(d), year=int(y))
 
-def to_mdy (date):
+def date_to_mdy (date):
     return date.strftime("%m/%d/%Y")
+
+def str_to_dict (str):
+    d = {}
+    for pair in str.split(','):
+        k,v = pair.split(':')
+        d[k.strip()] = v.strip()
+    return d
