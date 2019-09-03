@@ -43,7 +43,13 @@ cd partner/partner
 flask db migrate
 flask db upgrade
 
-Delete the migration dir and the partner.db if needing complete reset
+If can't migrate/upgrade because of too many difficult changes:
+Delete the migration dir and the partner.db
+source venv/bin/activate
+export FLASK_APP=partner.py
+flask db init # generates a db migration
+flask db migrate
+flask db upgrade
 
 enter python within venv
 from partner.models import Student

@@ -60,34 +60,9 @@ function generate_groups () {
     });
 }
 
-function generate_csv () {
-    var fd = new FormData();
-    fd.append('rosterId', rosterId);
-    $.ajax({
-      url: '/roster-csv',
-      data: fd,
-      processData: false,
-      contentType: false,
-      type: 'POST',
-      success: function(data){
-        loadCSV(data);
-        $('#collapseThree').collapse('show')
-      }
-    });
-}
-
-function loadCSV (data) {
-    $('#csv_div').html(data);
-}
-
 function loadGroupTable (groups) {
-    var $div = $('#groups_div');
-    $div.empty();
-    var $tab = $('<table class="table table-striped table-bordered">');
-    $div.append($tab);
-    var $thead = $('<thead><tr><th>Groups</th></tr></thead>');
-    var $tbody = $('<tbody></tbody>');
-    $tab.append($tbody);
+    var $tbody = $('#groupsTbody');
+    $tbody.empty();
     groups.forEach(function (group, i, a) {
         var $tr = $('<tr></tr>');
         $tbody.append($tr);
@@ -98,10 +73,8 @@ function loadGroupTable (groups) {
 }
 
 $(function () {
-    $('#saveButton').click(save_attendance);
-    $('#saveButton2').click(save_attendance);
-    $('#csvButton').click(generate_csv);
-    $('#generateButton').click(generate_groups);
+    $('.save-attendance').click(save_attendance);
+    $('.gen-partners').click(generate_groups);
     $('#datepick').datepicker({}).on('changeDate',
         function(e) {
             document.getElementById('lab-date-form').submit();
@@ -131,29 +104,25 @@ $(function () {
 
     <body>
     <form id="lab-date-form" method="get" action="">
-        <input id="meeting_time" name="meeting_time" value='{{ meeting_time }}' type="hidden">
+        <input id="labNumber" name="lab_number" value='{{ section.number }}' type="hidden">
 
         <div class="form-row">
-            <div class="col-2">
+            <div class="col-4">
                 <div class="dropdown">
                       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% if roster.meeting_time == 'wed1' %}Wed 1 PM {% endif %}
-                        {% if roster.meeting_time == 'wed3' %}Wed 3 PM {% endif %}
-                        {% if roster.meeting_time == 'thurs1' %}Thurs 1 PM {% endif %}
-                        {% if roster.meeting_time == 'thurs3' %}Thurs 3 PM {% endif %}
-
+                        {% if section %}{{ section.full_title }}{% else %}Select Section{% endif %}
                       </button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" onclick="$('#meeting_time').val('wed1'); $('#lab-date-form').submit()" href="#">Wed 1 PM</a>
-                        <a class="dropdown-item" onclick="$('#meeting_time').val('wed3'); $('#lab-date-form').submit()" href="#">Wed 3 PM</a>
-                        <a class="dropdown-item" onclick="$('#meeting_time').val('thurs1'); $('#lab-date-form').submit()" href="#">Thurs 1 PM</a>
-                        <a class="dropdown-item" onclick="$('#meeting_time').val('thurs3'); $('#lab-date-form').submit()" href="#">Thurs 3 PM</a>
+                          {% for sec in sections %}
+                            <a class="dropdown-item" onclick="$('#labNumber').val('{{sec.number}}'); $('#dropdownMenuButton').html('{{sec.full_title}}'); $('#lab-date-form').submit()" href="#">{{sec.full_title}}</a>
+                          {% endfor %}
+
                       </div>
                 </div>
 
 
             </div>
-            <div class="col-2">
+            <div class="col-3">
                 <div class="input-group date">
                     <input id="datepick" name="date" value='{{ dt }}' type="text" class="form-control">
                     <div class="input-group-addon">
@@ -165,8 +134,8 @@ $(function () {
     </form>
 
      <form id='attendance_form' enctype="multipart/form-data" action="" method="post" novalidate>
-         <button id='saveButton' class='btn btn-secondary' type="button" >Save Attendance</button>
-         <button id='generateButton' class='btn btn-secondary' type="button" >Generate Partnerships</button>
+         <button  class='btn btn-secondary save-attendance' type="button" >Save Attendance</button>
+         <button  class='btn btn-secondary gen-partners' type="button" >Generate Partnerships</button>
 
          <input id="gen_partners" name="gen_partners" value="false" type="hidden">
          <input type="hidden" name="numStudents" value="{{ num_students }}"/>
@@ -222,30 +191,26 @@ $(function () {
                     <div class="card-body">
 
                       <div id='groups_div' class="table-responsive col-md-6 partner-div">
+                          <table class="table table-striped table-bordered">
+<!--                              <thead><tr><th>Groups</th></tr></thead>-->
+                              <tbody id="groupsTbody"></tbody>
+                              {% for g in groups %}
+                              <tr>
+                                  {% for m in g.members %}
+                                  <td><img class="studentpic" width=30 height=30 src="{{m.pic_url}}">{{m.preferred_fname}} {{m.last_name}}</td>
+                                  {% endfor %}
+                              </tr>
+                              {% endfor %}
+                          </table>
                       </div>
                     </div>
                  </div>
              </div>
-              <div class="card">
-                 <div class="card-header" id="heading3">
-                      <h2 class="mb-0">
-                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                          CSV Spreadsheet
-                        </button>
-                      </h2>
-                </div>
-                 <div id="collapseThree" class="collapse" aria-labelledby="heading3" data-parent="#content-accordion">
-                    <div class="card-body">
 
-                      <div id='csv_div' >
-                      </div>
-                    </div>
-                 </div>
-             </div>
 
          </div>
-         <button id='saveButton2' class='btn btn-secondary' type="button" >Save Attendance</button>
-         <button id='csvButton' class='btn btn-secondary' type="button" >Produce CSV Spreadsheet</button>
+         <button id='saveButton2' class='btn btn-secondary save-attendance' type="button" >Save Attendance</button>
+         <button class='btn btn-secondary gen-partners' type="button" >Generate Partnerships</button>
      </form>
     </body>
 {% endblock %}

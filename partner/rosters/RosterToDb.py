@@ -12,7 +12,7 @@ class RosterToDb:
 
     @property
     def roster (self):
-        return self.roster
+        return self._roster
     '''
     Read a CSV file that has no attendance info and create a roster and its students in the db.
     If the class/roster already is in the db, remove its students and reload with the new list of students
@@ -21,12 +21,12 @@ class RosterToDb:
     def __init__ (self, section_id, csv_file):
         try:
             db.session.no_autoflush
-            self.roster = Roster.query.filter_by(section_id=section_id).first()
-            if self.roster:
+            self._roster = Roster.query.filter_by(section_id=section_id).first()
+            if self._roster:
                 self.remove_all_students()
             else:
-                self.roster = Roster(section_id=section_id)
-                db.session.add(self.roster)
+                self._roster = Roster(section_id=section_id)
+                db.session.add(self._roster)
             self.read_file(csv_file)
             db.session.commit()
         except Exception as exc:
@@ -35,8 +35,8 @@ class RosterToDb:
 
     def remove_all_students (self):
         # self.roster.students = []
-        for student in self.roster.students:
-            self.roster.students.remove(student)
+        for student in self._roster.students:
+            self._roster.students.remove(student)
 
 
      # TODO skip the junk at the beginning and get to the row of headers.
@@ -52,7 +52,7 @@ class RosterToDb:
 
             for row in reader:
                 student = self.get_student_from_row(row)
-                self.roster.students.append(student)
+                self._roster.students.append(student)
 
 
     # read the student info from the line and find the student in the db from onecard id or else create a new one.

@@ -60,46 +60,56 @@ def roster_groups ():
     date = util.parse_date(dt)
     r = models.Roster.query.filter_by(id=roster_id).first_or_404()
     group_generator = GroupGenerator.get_instance()
-    groups = group_generator.generate_groups(r, date)
+    # groups = group_generator.generate_groups(r, date)
+    groups = group_generator.create_groups(r,date)
     db.session.commit()
     return jsonify([g.to_dict() for g in groups])
 
-# takes a request to get a csv spreadsheet for a roster. Returns html of the roster's attendance
+# takes a request to get a csv spreadsheet for a roster. Returns a csv file
 @app.route('/roster-csv', methods=['GET'])
 def roster_csv ():
-    roster_id = request.form.get('rosterId')
-    meeting_time = request.args.get('meeting_time')
-    term = request.args.get('term')
-    if roster_id:
-        r = models.Roster.query.filter_by(id=roster_id).first_or_404() #type: Roster
+    secId = request.args.get('secId')
+    if secId:
+        r = models.Roster.query.filter_by(section_id=secId).first_or_404() #type: Roster
+        sec = models.Section.query.filter_by(id=r.section_id).first_or_404()
     else:
-        r = models.Roster.query.filter_by(meeting_time=meeting_time, term=term).first_or_404()
-    csv = AttendanceMgr.generate_attendance(r, util.today())
-    filename = 'lab' + str(r.lab_num) + '_' + meeting_time + '_' + util.today().strftime('%y%m%d' + '.csv')
+        flash('Must provide secId argument.  Select a lab section')
+        return redirect(url_for('roster_admin'))
+        year = util.get_current_year()
+        term = util.get_current_term()
+        sec = models.Section.query.filter_by(year=year, term=term).first_or_404()
+        r = models.Roster.query.filter_by(section_id=sec.id).first_or_404()
+
+    csv = AttendanceMgr.generate_attendance(r.students, sec.start_date, util.today())
+    filename = 'lab' + str(sec.number) + '_' + sec.title + '_' + util.today().strftime('%y%m%d' + '.csv')
     return Response(csv,
                     mimetype="text/csv",
                     headers={"Content-Disposition":
                                  "attachment;filename=" + filename})
-    # return render_template('roster_csv.html', dates=dates, rows=rows)
 
 # gets the page showing a given class roster for the date/term
 @app.route('/pages/rosters', methods=['GET'])
 def rosters_page():
     year = util.get_current_year()
     term = util.get_current_term()
-    meeting_time = request.args.get('meeting_time')
+    lab_num = request.args.get('lab_number')
     dt = request.args.get('date')  # mm/dd/yyyy format
-    if not meeting_time:
-        meeting_time = 'wed1'
     if not dt:
         date = util.today()
         dt = util.date_to_mdy(date)
     else:
         date = util.parse_date(dt)
-    r = models.Roster.query.filter_by(year=year, term=term, meeting_time=meeting_time).first_or_404()
+        year = date.year
+    sections = models.Section.query.filter_by(year=year, term=term).all()
+    sec = models.Section.query.filter_by(year=year, term=term, number=lab_num).first()
+    if not sec:
+        # TODO set error message so that 404 indicates missing resource is the sections for term/year
+        sec = models.Section.query.filter_by(year=year, term=term).first_or_404()
+    r = models.Roster.query.filter_by(section_id=sec.id).first_or_404("Roster not found for lab {}.  You need to create it from spreadsheet in admin page".format(sec.number))
     students = list(r.students)
     AttendanceMgr.set_attendance_status(students, date)
-    return render_template('roster.html', title='Attendance', dt=dt, meeting_time=meeting_time, groups=None,
+    groups = GroupGenerator.get_existing_groups(r, date)
+    return render_template('roster.html', title='Attendance', dt=dt, section=sec, sections=sections, groups=groups,
                            roster=r, students=students, num_students=len(list(r.students)))
 
 
@@ -118,14 +128,18 @@ def process_admin_section_form (year, term, dt, request):
                 db.session.add(s)
             sections.append(s)
     db.session.commit()
-    return render_template('admin.html', title='admin', term=term, dt=dt, year=year, sections=sections)
+    return render_template('admin.html', title='admin', tab='sections', term=term, dt=dt, year=year, sections=sections)
 
 
 @app.route('/pages/admin', methods=['GET', 'POST'])
 def roster_admin():
     tab = request.form.get('tab')
-    year = request.form.get('year') or util.get_current_year()
-    term = request.form.get('term') or util.get_current_term()
+    year = request.form.get('year') or request.args.get('year')
+    if not year:
+        year = util.get_current_year()
+    term = request.form.get('term') or request.args.get('term')
+    if not term:
+        term = util.get_current_term()
     section = None
 
     dt = request.args.get('date')  # mm/dd/yyyy format
@@ -141,7 +155,7 @@ def roster_admin():
             sec_id = request.form.get('labId')
             if not sec_id:
                 flash('Please select a section')
-                return redirect(request.url)
+                return redirect(url_for('roster_admin', term=request.form.get('term'), year=request.form.get('year')))
             section = Section.query.filter_by(id=sec_id).first_or_404()
             section.start_date = util.mdy_to_date(request.form.get('startDate'))
             file = request.files['file']
@@ -156,7 +170,7 @@ def roster_admin():
                 csv_filename = filename_prefix(uploaded_filename) + '.' + 'csv'
                 file.save(uploaded_filename)
                 Xlsx2csv(uploaded_filename, outputencoding="utf-8").convert(csv_filename)
-                rdb = RosterToDb(section, csv_filename)
+                rdb = RosterToDb(section.id, csv_filename)
                 roster = rdb.roster
             db.session.commit()
             return redirect(url_for('roster_admin', section_id=section.id))
@@ -166,9 +180,10 @@ def roster_admin():
         sec_id = request.args.get('section_id')
         if sec_id:
             section = Section.query.filter_by(id=sec_id).first_or_404()
+            dt = util.date_to_mdy(section.start_date) if section.start_date else dt
     sections = Section.query.filter_by(year=year, term=term).all()
 
-    return render_template('admin.html', title='admin', section=section, term=term, dt=dt, year=year, sections=sections)
+    return render_template('admin.html', title='admin', tab='rosters', year=year, term=term, section=section, dt=dt, sections=sections)
 
 
 @app.route('/test')

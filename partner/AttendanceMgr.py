@@ -53,8 +53,8 @@ class AttendanceMgr:
             student.status = date_entry.value
 
     @staticmethod
-    def get_term_dates (roster, end_date):
-        d1 = roster.start_date
+    def get_term_dates (start_date, end_date):
+        d1 = start_date
         incr = datetime.timedelta(weeks=1)
         dates = [d1]
         d = d1
@@ -64,12 +64,11 @@ class AttendanceMgr:
         return dates
 
     @staticmethod
-    def generate_attendance (roster, date):
-        dates = AttendanceMgr.get_term_dates(roster, date)
+    def generate_attendance (students, start_date, end_date):
+        dates = AttendanceMgr.get_term_dates(start_date, end_date)
         date_strings = [d.strftime('%m/%d/%Y') for d in dates]
-
         out = 'Student Name, ' + ','.join(date_strings) + '\n'
-        for student in roster.students:
+        for student in students:
             row = student.first_name + ' ' + student.last_name
             for d in dates:
                 e = AttendanceMgr.get_student_attendance(student, d)

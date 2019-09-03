@@ -1,50 +1,68 @@
 from datetime import datetime
 from partner import db
 
+
 class Section(db.Model):
+    tablename__ = 'section'
     id = db.Column(db.Integer, primary_key=True)
     year = db.Column(db.Integer, index=True)
     term = db.Column(db.String(12), index=True)
     number = db.Column(db.Integer, index=True)
     title = db.Column(db.String(12), index=True)
     start_date = db.Column(db.Date)
+    roster = db.relationship("Roster", uselist=False, back_populates="section")
+
+    @property
+    def full_title (self):
+        return "Lab {}: {}".format(self.number, self.title)
 
 class Roster(db.Model):
+    tablename__ = 'roster'
     id = db.Column(db.Integer, primary_key=True)
-    # TODO get rid of these fields
-    year = db.Column(db.Integer, index=True)
-    lab_num = db.Column(db.Integer, index=True)
-    meeting_time =  db.Column(db.String(12), index=True)
-    term = db.Column(db.String(12), index=True)
-    start_date = db.Column(db.Date)
-    # end of TODO
     section_id = db.Column(db.Integer, db.ForeignKey('section.id'))
+    section = db.relationship("Section", back_populates="roster")
     students = db.relationship('Student', backref='student', lazy='dynamic')
 
     def to_dict (self):
         d = {
-            'lab_num': self.lab_num,
-            'year': self.year,
-            'meeting_time': self.meeting_time,
-            'term': self.term,
+            'lab_num': self.section.number,
+            'section_id': self.section_id,
+            'year': self.section.year,
+            'title': self.section.title,
+            'term': self.section.term,
             'students': [s.to_dict() for s in self.students]
         }
         return d
 
     def __repr__(self):
-        return '<Lab-{} {} {} {}>'.format(self.lab_num, self.year, self.term, self.meeting_time)
+        return '<Lab-{} {} {} {}>'.format(self.section.lab_num, self.section.year, self.term, self.section.title)
+
+group2student = db.Table('group2student',
+    db.Column('group_id', db.Integer, db.ForeignKey('group.id'), primary_key=True),
+    db.Column('student_id', db.Integer, db.ForeignKey('student.id'), primary_key=True)
+)
 
 class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     roster_id = db.Column(db.Integer, db.ForeignKey('roster.id'))
     date = db.Column(db.Date)
-    members = db.relationship('Student', backref='member', lazy='dynamic')
+    members = db.relationship('Student', secondary=group2student, lazy='subquery',
+                    backref=db.backref('groups', lazy=True))
 
     def to_dict(self):
         return {'id': self.id,
                 'roster_id': self.roster_id,
                 'date': self.date,
                 'members': [s.to_dict() for s in self.members]}
+
+    def __eq__ (self, other):
+        return self.id == other.id
+
+    def __repr__ (self):
+        mems = ""
+        for s in self.members:
+            mems += s.__repr__() + ","
+        return "<Group {} {} >".format(self.id, mems[:-1])
 
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -55,7 +73,6 @@ class Student(db.Model):
     email = db.Column(db.String(120), index=True, unique=True)
     attendance = db.relationship('AttendanceEntry', backref='attendance', lazy='dynamic')
     class_id = db.Column(db.Integer, db.ForeignKey('roster.id'))
-    group_id = db.Column(db.Integer, db.ForeignKey('group.id'))
     status = ''
 
     @property
