@@ -1,21 +1,27 @@
-Add a phonetic field for first name pronunciation.  Should be able to add in the roster page and save with save attendance button.
+GUI:
 
-May need editable field for adding a nickname if one from banner is wrong
-
-Roster needs a start date for first day of class so that other dates are offset from it.   Need to update RosterToDb to figure this out or take
-from config file.
-
-Make student image enlarge on hover.  Make sure this works if I'm not logged into Banner.
+Features:
+Add a phonetic field for first name pronunciation.  Or perhaps a different nickname than the one
+that comes from spreadsheet in banner.
+Should be able to add in the roster page and save with save attendance button.
 
 - make URL be in config.  Could harvest all the images when I download the roster from banner so that I serve myself.
 
-Save CSV spreadsheet should produce a page of CSV that can be copy/pasted.
-
-Want a simple one-click process for getting latest roster from Banner and into db.
-
-Pairs to avoid might be page that I can edit and save.
+Decide if I keep pairs2avoid or if the all-possible-groups is sufficient to eliminate pairs2avoid
 
 Provide login/users and put on server elsewhere.
+
+Smith server contact person:  Suzanne Palmer (recommended by Dominique)
+
+Bugs:
+
+Tabs in admin page don't draw correctly probably because of background color
+
+Datepicker requires click on background to select the date.
+
+If student image is missing, don't put in the img tag.   Need to check URL using head and if 404 don't include.
+
+
 
 Use real db.
 

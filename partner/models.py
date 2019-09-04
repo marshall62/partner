@@ -1,5 +1,6 @@
 from datetime import datetime
 from partner import db
+import requests
 
 
 class Section(db.Model):
@@ -77,7 +78,8 @@ class Student(db.Model):
 
     @property
     def pic_url (self):
-        return "https://www.smith.edu/load.php?pic=" + self.onecard_id
+        url = "https://www.smith.edu/load.php?pic=" + self.onecard_id
+        return url
 
     @property
     def preferred_fname (self):

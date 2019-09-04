@@ -4,6 +4,15 @@ import datetime
 class AttendanceMgr:
 
     @staticmethod
+    def update_student_names (roster, edit_flags, names):
+        for i, s in enumerate(roster.students):
+            # assume that the only edit would be to change (or add) a nickname and that it is the first word
+            if edit_flags[i]=='true':
+                nname = names[i].split(' ')[0]
+                s.nick_name = nname
+
+
+    @staticmethod
     def is_present (status):
         return status != None and status == 'P'
 

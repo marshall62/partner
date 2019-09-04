@@ -7,7 +7,7 @@ from partner.AttendanceMgr import AttendanceMgr
 from partner.GroupGenerator import GroupGenerator
 from partner.rosters.RosterToDb import RosterToDb
 from partner.models import Section
-from partner.ClassMgr import ClassMgr
+# from partner.ClassMgr import ClassMgr
 from partner import db
 from flask import jsonify
 from xlsx2csv import Xlsx2csv
@@ -43,12 +43,18 @@ def rosters():
 @app.route('/roster-attendance', methods=['POST'])
 def roster_attendance ():
     roster_id = request.form.get('rosterId')
+    names_edited = request.form.get('namesEdited')
     dt = request.form.get('date')  # mm/dd/yyyy format
     date = util.parse_date(dt)
     r = models.Roster.query.filter_by(id=roster_id).first_or_404()
     num_studs = len(list(r.students))
+    if names_edited:
+        name_edit_flags = [request.form.get('nameEditedFlag-' + str(i)) for i in range(num_studs)]
+        names = [request.form.get('name-' + str(i)) for i in range(num_studs)]
+        AttendanceMgr.update_student_names(r, name_edit_flags, names)
     statuses = [request.form.get('status-' + str(i)) for i in range(num_studs)]
     AttendanceMgr.update_attendance(r, date, statuses)
+
     db.session.commit()
     return jsonify({})
 
@@ -164,14 +170,7 @@ def roster_admin():
             # if file.filename == '':
             #     flash('No selected file')
             #     return redirect(request.url)
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                uploaded_filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                csv_filename = filename_prefix(uploaded_filename) + '.' + 'csv'
-                file.save(uploaded_filename)
-                Xlsx2csv(uploaded_filename, outputencoding="utf-8").convert(csv_filename)
-                rdb = RosterToDb(section.id, csv_filename)
-                roster = rdb.roster
+            process_roster_file_upload(file, section)
             db.session.commit()
             return redirect(url_for('roster_admin', section_id=section.id))
                 #TODO alter rosters_page to take a roster as input rather than meeting_time
@@ -184,6 +183,17 @@ def roster_admin():
     sections = Section.query.filter_by(year=year, term=term).all()
 
     return render_template('admin.html', title='admin', tab='rosters', year=year, term=term, section=section, dt=dt, sections=sections)
+
+
+def process_roster_file_upload(file, section):
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        uploaded_filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        csv_filename = filename_prefix(uploaded_filename) + '.' + 'csv'
+        file.save(uploaded_filename)
+        Xlsx2csv(uploaded_filename, outputencoding="utf-8").convert(csv_filename)
+        rdb = RosterToDb(section.id, csv_filename)
+        roster = rdb.roster
 
 
 @app.route('/test')
