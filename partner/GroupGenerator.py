@@ -159,7 +159,7 @@ class GroupGenerator:
                 stud = Student.query.filter_by(onecard_id=s).first_or_404()
                 g.members.append(stud)
         # delete groups created for this date
-        for g in Group.query.filter_by(date=date).all():
+        for g in Group.query.filter_by(roster_id=roster.id, date=date).all():
             db.session.delete(g)
         # put the date on the current assignment.  This has the effect of creating a different
         # assignment (if we keep running it for the date, it will switch back and forth btw assignments)

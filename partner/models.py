@@ -76,6 +76,9 @@ class Student(db.Model):
     class_id = db.Column(db.Integer, db.ForeignKey('roster.id'))
     status = ''
 
+    def __lt__ (self, other):
+        return self.last_name < other.last_name
+
     @property
     def pic_url (self):
         url = "https://www.smith.edu/load.php?pic=" + self.onecard_id

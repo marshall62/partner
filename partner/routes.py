@@ -113,6 +113,7 @@ def rosters_page():
         sec = models.Section.query.filter_by(year=year, term=term).first_or_404()
     r = models.Roster.query.filter_by(section_id=sec.id).first_or_404("Roster not found for lab {}.  You need to create it from spreadsheet in admin page".format(sec.number))
     students = list(r.students)
+    students.sort()
     AttendanceMgr.set_attendance_status(students, date)
     groups = GroupGenerator.get_existing_groups(r, date)
     return render_template('roster.html', title='Attendance', dt=dt, section=sec, sections=sections, groups=groups,
