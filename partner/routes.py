@@ -65,9 +65,10 @@ def roster_groups ():
     dt = request.form.get('date')  # mm/dd/yyyy format
     date = util.parse_date(dt)
     r = models.Roster.query.filter_by(id=roster_id).first_or_404()
+    sec = models.Section.query.filter_by(id=r.section_id).first_or_404()
     group_generator = GroupGenerator.get_instance()
     # groups = group_generator.generate_groups(r, date)
-    groups = group_generator.create_groups(r,date)
+    groups = group_generator.create_groups(r,sec.start_date,date)
     db.session.commit()
     return jsonify([g.to_dict() for g in groups])
 

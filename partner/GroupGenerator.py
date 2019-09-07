@@ -3,6 +3,7 @@ from partner import app
 from partner.models import Group, Student
 from partner.AttendanceMgr import AttendanceMgr
 from partner import db
+from sqlalchemy import and_
 
 class GroupGenerator:
     GROUP_SIZE = 2
@@ -119,7 +120,7 @@ class GroupGenerator:
         random.shuffle(all_possible) # needed so that repeat generations for a date give different ones
         i = 0
         assignment = []
-        print("Previously assigned ", previously_assigned_groups)
+        # print("Previously assigned ", previously_assigned_groups)
         remaining = [s.onecard_id for s in students]
         while i < len(all_possible) and len(assignment) < len(students)//2:
             grp_tuple = all_possible[i]
@@ -128,16 +129,16 @@ class GroupGenerator:
             c1 = self._is_unused(grp_tuple, previously_assigned_groups)
             c2 = self._is_not_processed2(grp_tuple, assignment)
             if c1 and c2:
-                print("Assigning ", grp_tuple, "position ", i)
+                # print("Assigning ", grp_tuple, "position ", i)
                 for s in grp_tuple:
                     remaining.remove(s)
                 assignment.append(grp_tuple)
-            elif not c1 and not c2:
-                print("Group ", grp_tuple, " previously assigned and student(s) processed")
-            elif not c1:
-                print ("Group ", grp_tuple, " previously assigned")
-            else:
-                print("Group ", grp_tuple, " student(s) processed")
+            # elif not c1 and not c2:
+            #     print("Group ", grp_tuple, " previously assigned and student(s) processed")
+            # elif not c1:
+            #     print ("Group ", grp_tuple, " previously assigned")
+            # else:
+            #     print("Group ", grp_tuple, " student(s) processed")
             i += 1
         # if one straggler remains, put them in the last group.
         if len(remaining) == 1:
@@ -145,10 +146,10 @@ class GroupGenerator:
             assignment[-1] = grp_tuple
         return assignment
 
-    def create_groups(self, roster, date):
+    def create_groups(self, roster, start_date, date):
         students = AttendanceMgr.get_present_students(roster, date)
-
-        previously_assigned_groups = Group.query.filter_by(roster_id=roster.id).all()
+        # only find groups created for this roster since beginning of semester.
+        previously_assigned_groups = Group.query.filter(and_(Group.roster_id==roster.id, Group.date >= start_date)).all()
         group_list = self.assign_partners(students, previously_assigned_groups) # returns a list of tuples
         group_objs = []
         for grp_tuple in group_list:
@@ -170,31 +171,6 @@ class GroupGenerator:
     @staticmethod
     def get_existing_groups (roster, date):
         return Group.query.filter_by(roster_id=roster.id, date=date).all()
-
-    def generate_groups (self, roster, date):
-
-        student_list = AttendanceMgr.get_present_students(roster, date)
-
-        random.shuffle(student_list)
-
-        groups = []
-        for i in range(0, len(student_list), self.GROUP_SIZE):
-            # if the remaining students in the list aren't enough to create a group, put in the last group
-            if len(student_list[i:]) >= self.GROUP_SIZE:
-                g = student_list[i:i+self.GROUP_SIZE]
-                groups.append(g)
-            else:
-                g = student_list[i:]
-                groups.append(g)
-            if self.is_bad_group(g):
-                return self.generate_groups(roster, date)
-        group_list = []
-        for g in groups:
-            group = Group(roster_id=roster.id, date=date)
-            for s in g:
-                group.members.append(s)
-            group_list.append(group)
-        return group_list
 
 
 
