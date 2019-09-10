@@ -13,12 +13,12 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css" integrity="sha256-BJ/G+e+y7bQdrYkS2RBTyNfBHpA9IuGaPmf9htub5MQ=" crossorigin="anonymous" />
         <style>
 
-        .who-header {
+        .pair-header {
             font-family: 'Amatic SC', cursive;
             font-size: 56px;
             }
 
-        .who-tab-text {
+        .pair-tab-text {
             font-family: 'Amatic SC', cursive;
             font-size: 24px;
             }
@@ -44,9 +44,9 @@
         {% endblock %}
 
       {% if title %}
-      <title>WhoHere? {{ title }}</title>
+      <title>PairUp {{ title }}</title>
       {% else %}
-      <title>WhoHere? </title>
+      <title>PairUp</title>
       {% endif %}
     </head>
     <body>
@@ -54,16 +54,16 @@
         <div class="row">
             <div class="col-sm-2">&nbsp;</div>
             <div class="col-sm-1">
-                <img align="bottom" src="{{url_for('static', filename='images/pear.png')}}" width="50" height="50">
+                <img align="bottom" src="{{url_for('static', filename='images/pear.png')}}" width="70" height="70">
             </div>
             <div align="left" class="col-sm-6">
-                <h2 class="who-header">WhoHere?</h2>
+                <h2 class="pair-header">PairUp</h2>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-2"><a class='who-tab-text' href="{{ url_for('roster_admin') }}">Admin</a></div>
-            <div class="col-sm-2"><a class='who-tab-text' href="{{ url_for('rosters_page') }}">Attendance</a></div>
-            <div class="col-sm-2"><a class='who-tab-text'href="{{ url_for('login') }}">Login</a></div>
+            <div class="col-sm-2"><a class='pair-tab-text' href="{{ url_for('roster_admin') }}">Admin</a></div>
+            <div class="col-sm-2"><a class='pair-tab-text' href="{{ url_for('rosters_page') }}">Attendance</a></div>
+            <div class="col-sm-2"><a class='pair-tab-text'href="{{ url_for('login') }}">Login</a></div>
         </div>
         <hr>
         {% with messages = get_flashed_messages() %}
