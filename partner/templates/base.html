@@ -1,5 +1,8 @@
 <html>
     <head>
+        <link rel="shortcut icon" href="{{url_for('static', filename='images/favicon.ico')}}" type="image/x-icon">
+        <link rel="icon" href="{{url_for('static', filename='images/favicon.ico')}}" type="image/x-icon">
+        <link href="https://fonts.googleapis.com/css?family=Amatic+SC&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -8,7 +11,32 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css" integrity="sha256-BJ/G+e+y7bQdrYkS2RBTyNfBHpA9IuGaPmf9htub5MQ=" crossorigin="anonymous" />
+        <style>
 
+        .who-header {
+            font-family: 'Amatic SC', cursive;
+            font-size: 56px;
+            }
+
+        .who-tab-text {
+            font-family: 'Amatic SC', cursive;
+            font-size: 24px;
+            }
+
+        .btn-secondary, .btn-secondary:hover, .btn-secondary:active, .btn-secondary:visited {
+            background-color: #C2D558 !important;
+            font-size: 14px;
+            color:black;
+        }
+        .dropdown-item {
+            background-color: #C2D558 !important;
+            font-size: 14px;
+            color:black;
+        }
+
+
+}
+        </style>
 <!--        <link rel="stylesheet" href="{{ url_for('static', filename='open-iconic/font/css/open-iconic-bootstrap.css') }}">-->
         {% block style %}
         {% endblock %}
@@ -16,22 +44,26 @@
         {% endblock %}
 
       {% if title %}
-      <title>{{ title }} - PartnerGen</title>
+      <title>WhoHere? {{ title }}</title>
       {% else %}
-      <title>Welcome to PartnerGen</title>
+      <title>WhoHere? </title>
       {% endif %}
     </head>
     <body>
+        <div style="height: 4px"></div>
         <div class="row">
-            <div class="col-sm-4">
-                <img src="{{url_for('static', filename='images/gasconne_sm.jpg')}}">
+            <div class="col-sm-2">&nbsp;</div>
+            <div class="col-sm-1">
+                <img align="bottom" src="{{url_for('static', filename='images/pear.png')}}" width="50" height="50">
             </div>
-            <div class="col-sm-8">
-                <h2>Dave's 111 Labs</h2>
-                <a href="{{ url_for('roster_admin') }}">Admin</a>
-                <a href="{{ url_for('rosters_page') }}">Attendance</a>
-                <a href="{{ url_for('login') }}">Login</a>
+            <div align="left" class="col-sm-6">
+                <h2 class="who-header">WhoHere?</h2>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2"><a class='who-tab-text' href="{{ url_for('roster_admin') }}">Admin</a></div>
+            <div class="col-sm-2"><a class='who-tab-text' href="{{ url_for('rosters_page') }}">Attendance</a></div>
+            <div class="col-sm-2"><a class='who-tab-text'href="{{ url_for('login') }}">Login</a></div>
         </div>
         <hr>
         {% with messages = get_flashed_messages() %}
