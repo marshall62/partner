@@ -1,68 +1,21 @@
-from partner.models import Group,Student, Roster
+from partner.models import Group,Student, Roster, Section
 from partner.GroupGenerator import GroupGenerator
+from sqlalchemy import and_
+import util
+import pytest
+
 class TestGroupGenerator:
 
-    def test1 (self):
-        gen = GroupGenerator.get_instance()
-        s1 = Student.query.filter_by(onecard_id=991242779).first()  # apodaca
-        s2 = Student.query.filter_by(onecard_id=991240585).first()  # cui
-        assert True == gen.is_bad_group([s1, s2])
 
-    def test2 (self):
-        gen = GroupGenerator.get_instance()
-        s1 = Student.query.filter_by(onecard_id=991242779).first()  # apodaca
-        s2 = Student.query.filter_by(onecard_id=991204748).first()  # destine
-        assert False == gen.is_bad_group([s1, s2])
-
-
-    def test_update_to_be_processed (self):
-        g1 = Group(id=1)
-        s1 = Student(onecard_id=1, first_name='a')
-        s2 = Student(onecard_id=2, first_name='b')
-        g1.members.append(s1)
-        g1.members.append(s2)
-        s1 = Student(onecard_id=1,first_name='a')
-        s2 = Student(onecard_id=2,first_name='b')
-        s3 = Student(onecard_id=3,first_name='c')
-        s4 = Student(onecard_id=4,first_name='d')
-        tobeproc = [s1.onecard_id, s2.onecard_id, s3.onecard_id, s4.onecard_id]
-        gen = GroupGenerator.get_instance()
-        gen._update_to_be_processed(tobeproc, (s1.onecard_id, s2.onecard_id))
-        assert tobeproc == [s3.onecard_id, s4.onecard_id]
 
     def test_gen_all_possible_groups (self):
-        s1 = Student(onecard_id=1, first_name='a')
-        s2 = Student(onecard_id=2, first_name='b')
-        s3 = Student(onecard_id=3, first_name='c')
-        s4 = Student(onecard_id=4, first_name='d')
-        s5 = Student(onecard_id=5, first_name='e')
-        l = [s1,s2,s3,s4,s5]
-        gen = GroupGenerator.get_instance()
+        l = [1,2,3,4,5]
+        gen = GroupGenerator()
         a = gen._generate_all_possible_groups(l)
         assert len(a) == 10
-        assert a == [(1,2),(1,3),(1,4),(1,5),(2,3),(2,4),(2,5),(3,4),(3,5),(4,5)]
+        assert a == [[1,2],[1,3],[1,4],[1,5],[2,3],[2,4],[2,5],[3,4],[3,5],[4,5]]
 
 
-    def test_is_unused (self):
-        gp = (1,2)
-        g1 = Group(id=1)
-        g1.members.append(Student(onecard_id=1,first_name='a'))
-        g1.members.append(Student(onecard_id=2,first_name='b'))
-        gen = GroupGenerator.get_instance()
-        a = gen._is_unused(gp, [g1])
-        assert a == False
-        b = gen._is_unused((3,4),[g1])
-        assert b == True
-
-    def test_is_not_processed (self):
-
-        gen = GroupGenerator.get_instance()
-        a = gen._is_not_processed((1,2),[1,3,5,7])
-        assert a == False
-        b = gen._is_not_processed((1,2),[3,5,7])
-        assert b == False
-        c = gen._is_not_processed((1, 2), [1, 3, 2, 7])
-        assert c == True
 
 
 
@@ -79,11 +32,11 @@ class TestGroupGenerator:
         r.students.append(s3)
         r.students.append(s4)
         r.students.append(s5)
-        gen = GroupGenerator.get_instance()
-        a = gen.assign_partners(l, [])
+        dt = util.mdy_to_date('09/15/2019')
+        start_dt = util.mdy_to_date('09/11/2019')
+        gen = GroupGenerator()
+        a = gen.create_groups(r,start_dt,dt, attendance_before_gen=False)
         assert len(a) == 2
-        assert a == [(1,2), (3,4,5)]
-
         g1 = Group(id=1)
         g1.members.append(s1)
         g1.members.append(s2)
@@ -91,11 +44,84 @@ class TestGroupGenerator:
         g2.members.append(s3)
         g2.members.append(s4)
         g2.members.append(s5)
-        a = gen.assign_partners(l, [g1, g2])
+        a = gen.create_groups(r, start_dt,dt, attendance_before_gen=False)
         assert len(a) == 2
-        assert a == [(1, 3), (2,4,5)]
 
 
+
+
+    @pytest.mark.skip(reason="slow test")
+    def test_create_groups (self):
+        sec = Section.query.filter_by(id=5).first()
+        r = Roster.query.filter_by(section_id=sec.id).first()
+        gen = GroupGenerator()
+        dt = util.mdy_to_date('09/15/2019')
+        start_dt = util.mdy_to_date('09/11/2019')
+        for i in range(50):
+            gps = gen.create_groups(r,start_dt,dt,attendance_before_gen=False)
+            assert len(a) == 15
+
+    @pytest.mark.skip(reason="slow test")
+    def test_create_groups2 (self):
+        r = Roster()
+        s1 = Student(onecard_id=1, first_name='a')
+        s2 = Student(onecard_id=2, first_name='b')
+        s3 = Student(onecard_id=3, first_name='c')
+        s4 = Student(onecard_id=4, first_name='d')
+        s5 = Student(onecard_id=5, first_name='e')
+        s6 = Student(onecard_id=6, first_name='f')
+        l = [s1, s2, s3, s4, s5, s6]
+        g1 = Group(id=1)
+        g1.members.append(s1)
+        g1.members.append(s2)
+        g2 = Group(id=2)
+        g2.members.append(s3)
+        g2.members.append(s4)
+        g3 = Group(id=3)
+        g3.members.append(s5)
+        g3.members.append(s6)
+        r.students.append(s1)
+        r.students.append(s2)
+        r.students.append(s3)
+        r.students.append(s4)
+        r.students.append(s5)
+        r.students.append(s6)
+        gen = GroupGenerator()
+        dt = util.mdy_to_date('09/15/2019')
+        start_dt = util.mdy_to_date('09/11/2019')
+        gps = gen.create_groups(r,start_dt,dt,attendance_before_gen=True)
+        assert 3 == len(gps)
+
+
+    def test_arrange1 (self):
+        all_poss = [[3, 5], [4, 6], [2, 5], [1, 5], [1, 2], [5, 6], [1, 4], [2, 6], [3, 6], [3, 4], [4, 5], [1, 6], [1, 3], [2, 4], [2, 3]]
+        prev = []
+        gen = GroupGenerator()
+        a = gen.pair_up(3, prev, all_poss,[], {})
+        print(a)
+        assert len(a) == 3
+        assert [[3,5],[4,6],[1,2]] == a
+
+    def test_arrange (self):
+        all_poss = [[3, 5], [4, 6], [2, 5], [1, 5], [1, 2], [5, 6], [1, 4], [2, 6], [3, 6], [3, 4], [4, 5], [1, 6], [1, 3], [2, 4], [2, 3]]
+        prev = [[1,2],[3,4],[5,6]]
+        gen = GroupGenerator()
+        a = gen.pair_up(3,prev,all_poss,[],{})
+        print(a)
+        assert len(a) == 3
+
+    def test_arrange2 (self):
+        prev = [[1,2,3]]
+        gen = GroupGenerator()
+        a = gen.arrange([1,2,3], prev)
+        assert set(a[0]) == {1,2,3}
+
+    def test_arrange3 (self):
+        prev = []
+        gen = GroupGenerator()
+        a = gen.arrange([1,2,3],prev)
+        print(a)
+        assert {1,2,3} == set(a[0])
 
 
 

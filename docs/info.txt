@@ -62,3 +62,4 @@ SQLite CLI operations
 
 $sqlite3 partner.db
 > select * from student
+>.tables # lists tables

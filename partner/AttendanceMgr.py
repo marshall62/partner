@@ -5,7 +5,7 @@ class AttendanceMgr:
 
     @staticmethod
     def update_student_names (roster, edit_flags, names):
-        for i, s in enumerate(roster.students):
+        for i, s in enumerate(roster.sorted_students()):
             # assume that the only edit would be to change (or add) a nickname and that it is the first word
             if edit_flags[i]=='true':
                 nname = names[i].split(' ')[0]
@@ -18,7 +18,7 @@ class AttendanceMgr:
 
     @staticmethod
     def update_attendance(roster, date, statuses):
-        for i, s in enumerate(roster.students):
+        for i, s in enumerate(roster.sorted_students()):
             status = statuses[i]
             s.status = status
             found = False

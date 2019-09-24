@@ -66,11 +66,30 @@ def roster_groups ():
     date = util.parse_date(dt)
     r = models.Roster.query.filter_by(id=roster_id).first_or_404()
     sec = models.Section.query.filter_by(id=r.section_id).first_or_404()
-    group_generator = GroupGenerator.get_instance()
     # groups = group_generator.generate_groups(r, date)
-    groups = group_generator.create_groups(r,sec.start_date,date)
+    # TODO the attendance_before_gen flag needs to be an admin setting on the section
+    # Under one scenario groups are generated before taking attendance and under the second scenario
+    # attendance is done first so that we don't generate groups using absent students.
+    groups = GroupGenerator().create_groups(r,sec.start_date,date, attendance_before_gen=False)
     db.session.commit()
     return jsonify([g.to_dict() for g in groups])
+
+@app.route('/groups/csv', methods=['GET'])
+def groups_csv ():
+    labNum = request.args.get('labNum')
+    sec = Section.query.filter_by()
+    date = request.args.get('date')
+    date = util.mdy_to_date(date)
+    year = date.year
+    term = util.get_term(date)
+    section = models.Section.query.filter_by(number=labNum, term=term, year=year).first_or_404()
+    r = models.Roster.query.filter_by(section_id=section.id).first_or_404() #type Roster
+    csv = GroupGenerator().get_groups_csv(r.id, date)
+    filename = 'labgroups' + str(section.number) + '_' + section.title + '_' + date.strftime('%y%m%d' + '.csv')
+    return Response(csv,
+                    mimetype="text/csv",
+                    headers={"Content-Disposition":
+                                 "attachment;filename=" + filename})
 
 # takes a request to get a csv spreadsheet for a roster. Returns a csv file
 @app.route('/roster-csv', methods=['GET'])
@@ -87,7 +106,7 @@ def roster_csv ():
         sec = models.Section.query.filter_by(year=year, term=term).first_or_404()
         r = models.Roster.query.filter_by(section_id=sec.id).first_or_404()
 
-    csv = AttendanceMgr.generate_attendance(r.students, sec.start_date, util.today())
+    csv = AttendanceMgr.generate_attendance(r.sorted_students(), sec.start_date, util.today())
     filename = 'lab' + str(sec.number) + '_' + sec.title + '_' + util.today().strftime('%y%m%d' + '.csv')
     return Response(csv,
                     mimetype="text/csv",
@@ -113,10 +132,9 @@ def rosters_page():
         # TODO set error message so that 404 indicates missing resource is the sections for term/year
         sec = models.Section.query.filter_by(year=year, term=term).first_or_404()
     r = models.Roster.query.filter_by(section_id=sec.id).first_or_404("Roster not found for lab {}.  You need to create it from spreadsheet in admin page".format(sec.number))
-    students = list(r.students)
-    students.sort()
+    students = r.sorted_students()
     AttendanceMgr.set_attendance_status(students, date)
-    groups = GroupGenerator.get_existing_groups(r, date)
+    groups = GroupGenerator().get_existing_groups(r, date)
     return render_template('roster.html', title='Attendance', dt=dt, section=sec, sections=sections, groups=groups,
                            roster=r, students=students, num_students=len(list(r.students)))
 

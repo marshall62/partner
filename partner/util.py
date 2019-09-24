@@ -31,12 +31,15 @@ def today ():
 def get_current_year ():
     return today().year
 
-def get_current_term ():
-    t = today() #type: datetime.date
-    if t.month in [1,2,3,4,5]:
+def get_term (dt):
+    if dt.month in [1,2,3,4,5]:
         return 'spring'
     else:
         return 'fall'
+
+def get_current_term ():
+    t = today() #type: datetime.date
+    return get_term(t)
 
 def mdy_to_date (mdy):
     m,d,y = mdy.split('/')

@@ -35,6 +35,11 @@ class Roster(db.Model):
         }
         return d
 
+    def sorted_students (self):
+        l = list(self.students)
+        l.sort()
+        return l
+
     def __repr__(self):
         return '<Lab-{} {} {} {}>'.format(self.section.lab_num, self.section.year, self.term, self.section.title)
 
