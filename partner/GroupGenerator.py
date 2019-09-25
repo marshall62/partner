@@ -63,14 +63,16 @@ class GroupGenerator:
     # pairs that assigns each student in the class to a partner without repeating a previous pairing.
     def arrange (self, stud_ids, prev):
         random.shuffle(stud_ids)
+        odd_size = False
         if len(stud_ids) % 2 != 0:
             odd_stud = stud_ids[0]
+            odd_size = True
             stud_ids = stud_ids[1:]
         all = self._generate_all_possible_groups(stud_ids) # 2-tuples of student ids
         assigned = {}
         r = self.pair_up(len(stud_ids) // 2, prev, all, [], assigned)
         # if there were originally an odd number of students add the odd one in to the last group
-        if len(stud_ids) % 2 == 0:
+        if odd_size:
             r[-1].append(odd_stud) # add the lone straggler to the last group
         return r
 
