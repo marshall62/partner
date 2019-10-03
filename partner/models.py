@@ -24,14 +24,14 @@ class Roster(db.Model):
     section = db.relationship("Section", back_populates="roster")
     students = db.relationship('Student', backref='student', lazy='dynamic')
 
-    def to_dict (self):
+    def to_dict (self, students=None):
         d = {
             'lab_num': self.section.number,
             'section_id': self.section_id,
             'year': self.section.year,
             'title': self.section.title,
             'term': self.section.term,
-            'students': [s.to_dict() for s in self.students]
+            'students': [s.to_dict() for s in (self.students if not students else students)]
         }
         return d
 
@@ -104,7 +104,8 @@ class Student(db.Model):
             'preferred_fname': self.preferred_fname,
             'first_name': self.first_name,
             'nick_name': self.nick_name,
-            'last_name': self.last_name
+            'last_name': self.last_name,
+            'status': self.status
         }
 
     def __repr__(self):

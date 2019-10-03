@@ -2,6 +2,7 @@ from partner import app, db
 from partner.partner import generateGroups
 from partner import util
 from flask import request, render_template, flash, redirect, url_for, Response
+from flask_cors import CORS, cross_origin
 from partner.forms import LoginForm, AttendanceForm, AttendanceStudentForm
 from partner.AttendanceMgr import AttendanceMgr
 from partner.GroupGenerator import GroupGenerator
@@ -30,14 +31,6 @@ def index():
     user = {'username': 'Blee'}
     return render_template('index.html', title='Home', user=user)
 
-# REST service endpoint to get a roster as JSON.
-@app.route('/rosters', methods=['GET'])
-def rosters():
-    year = request.args.get('year')
-    term = request.args.get('term')
-    meeting_time = request.args.get('meetingTime')
-    r = models.Roster.query.filter_by(year=year, term=term, meeting_time=meeting_time).first_or_404()
-    return jsonify(r.to_dict())
 
 # REST service endpoint writes the attendance to the db
 @app.route('/roster-attendance', methods=['POST'])

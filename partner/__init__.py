@@ -33,4 +33,4 @@ if app.config['ENV'] == 'development':
 app.logger.addHandler(fh)
 app.logger.debug("Starting app")
 app.logger.debug("---------------------------------------------------------")
-from partner import routes, models
+from partner import routes, rest_routes, models
