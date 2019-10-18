@@ -13,6 +13,14 @@ class Section(db.Model):
     start_date = db.Column(db.Date)
     roster = db.relationship("Roster", uselist=False, back_populates="section")
 
+    def to_dict (self):
+        d = {}
+        d['title'] = self.full_title
+        d['id'] = self.id
+        d['number'] = self.number
+        return d
+
+
     @property
     def full_title (self):
         return "Lab {}: {}".format(self.number, self.title)
@@ -29,7 +37,7 @@ class Roster(db.Model):
             'lab_num': self.section.number,
             'section_id': self.section_id,
             'year': self.section.year,
-            'title': self.section.title,
+            'title': self.section.full_title,
             'term': self.section.term,
             'students': [s.to_dict() for s in (self.students if not students else students)]
         }
