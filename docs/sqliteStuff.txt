@@ -1,0 +1,12 @@
+enter python within venv
+from partner.models import Student
+s = Student(first_name='dave', last_name='M')
+partner.db.session.add(s)
+partner.db.session.commit() (may need to rollback() first)
+Student.query.all()
+
+SQLite CLI operations
+
+$sqlite3 partner.db
+> select * from student
+>.tables # lists tables

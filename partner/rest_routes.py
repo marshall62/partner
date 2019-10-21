@@ -1,10 +1,11 @@
 from flask_cors import cross_origin
-from flask import request, jsonify
+from flask import request, jsonify, Response
 
 from partner import app, util
 from partner.models import Section, Group
 from partner.AttendanceMgr import AttendanceMgr
 from partner.GroupGenerator import GroupGenerator
+from partner import db
 
 # REST API endpoint to save a roster JSON.
 # body must contain secId, list of students, [date mm/dd/yyyy]
@@ -30,6 +31,7 @@ def rosters_post ():
         names = [request.form.get('name-' + str(i)) for i in range(num_studs)]
         AttendanceMgr.update_student_names(r, name_edit_flags, names)
     AttendanceMgr.update_attendance(r, date, status_codes)
+    db.session.commit()
     return jsonify({})
 
 
@@ -73,31 +75,38 @@ def post_groups ():
     # Under one scenario groups are generated before taking attendance and under the second scenario
     # attendance is done first so that we don't generate groups using absent students.
     groups = GroupGenerator().create_groups(r,sec.start_date,date, attendance_before_gen=False)
-    # db.session.commit()
+    db.session.commit()
     return jsonify([g.to_dict() for g in groups])
 
 # Returns existing groups for the section and date
 @app.route('/groups', methods=['GET'])
 @cross_origin()
 def get_groups ():
-    sec_id = request.args.get('secId');
-    dt = request.args.get('date');
+    sec_id = request.args.get('secId')
+    dt = request.args.get('date')
+    format = request.args.get('format')
     sec = Section.query.filter_by(id=sec_id).first_or_404()
     r = sec.roster
     if dt:
         date = util.parse_date(dt)
     else:
         date = util.today()
-    groups = Group.query.filter_by(roster_id=r.id, date=date).all()
-
-    # db.session.commit()
-    return jsonify([g.to_dict() for g in groups])
+    if format=='csv':
+        csv = GroupGenerator().get_groups_csv(r.id, date)
+        filename = 'labgroups' + str(sec.number) + '_' + sec.title + '_' + date.strftime('%y%m%d' + '.csv')
+        return Response(csv,
+                        mimetype="text/csv",
+                        headers={"Content-Disposition":
+                                     "attachment;filename=" + filename})
+    else:
+        groups = Group.query.filter_by(roster_id=r.id, date=date).all()
+        return jsonify([g.to_dict() for g in groups])
 
 # REST API endpoint to get all sections as JSON.
 @app.route('/sections', methods=['GET'])
 @cross_origin()
 def sections():
-    sec_id = request.args.get('secId')
+    sec_id = request.args.get('id')
     year = request.args.get('year')
     term = request.args.get('term')
     date = request.args.get('date') # an optional parameter which, if given, will include attendance data for the date
