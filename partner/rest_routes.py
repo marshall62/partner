@@ -21,15 +21,12 @@ def rosters_post ():
         date = util.mdy_to_date(dt)
     else:
         date = util.today()
-    students = json.get('students')
-    status_codes = [s['status'] for s in students]
-    #TODO rework below to handle alterations to student names.
-    names_edited = False
-    num_studs = len(students)
-    if names_edited:
-        name_edit_flags = [request.form.get('nameEditedFlag-' + str(i)) for i in range(num_studs)]
-        names = [request.form.get('name-' + str(i)) for i in range(num_studs)]
-        AttendanceMgr.update_student_names(r, name_edit_flags, names)
+    students = json.get('students') # list is sorted
+    status_codes = [ s['status'] for s in students ]
+    name_edits = [ True if s.get('edited') else False for s in students ]
+    if True in name_edits:
+        names = [s['preferred_fname'] + ' ' + s['last_name'] for s in students ]
+        AttendanceMgr.update_student_names2(r, name_edits, names)
     AttendanceMgr.update_attendance(r, date, status_codes)
     db.session.commit()
     return jsonify({})
@@ -55,7 +52,7 @@ def rosters():
         number = 1
     sec = Section.query.filter_by(year=year, term=term, number=number).first_or_404()
     roster = sec.roster
-    students = list(roster.students)
+    students = roster.sorted_students()
     AttendanceMgr.set_attendance_status(students, date)
     # students[0].status = 'A'
     return jsonify(sec.roster.to_dict(students))
@@ -126,7 +123,7 @@ def sections():
     # update the roster with the attendance for the date
     for sec in sections:
         d = sec.to_dict()
-        students = list(sec.roster.students)
+        students = sec.roster.sorted_students()
         AttendanceMgr.set_attendance_status(students, date)
         rd = sec.roster.to_dict(students)
         d['roster'] = rd
