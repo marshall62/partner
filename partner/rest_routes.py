@@ -65,13 +65,13 @@ def post_groups ():
     json = request.get_json()
     sec_id = json.get('secId')
     dt = json.get('date')
+    # Under one scenario groups are generated before taking attendance and under the second scenario
+    # attendance is done first so that we don't generate groups using absent students.
+    attendance_based = json.get('basedOnAttendance')
     sec = Section.query.filter_by(id=sec_id).first_or_404()
     r = sec.roster
     date = util.parse_date(dt)
-    # TODO the attendance_before_gen flag needs to be an admin setting on the section
-    # Under one scenario groups are generated before taking attendance and under the second scenario
-    # attendance is done first so that we don't generate groups using absent students.
-    groups = GroupGenerator().create_groups(r,sec.start_date,date, attendance_before_gen=False)
+    groups = GroupGenerator().create_groups(r,sec.start_date,date, attendance_before_gen=attendance_based)
     db.session.commit()
     return jsonify([g.to_dict() for g in groups])
 

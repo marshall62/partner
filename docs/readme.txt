@@ -1,3 +1,8 @@
+How to run app from command line:
+source venv/bin/activate
+flask run
+(maybe export FLASK_APP=partner)
+
 Getting rosters from Banner:
 
 The admin section of the app (/admin) must be used to create course sections each semester.

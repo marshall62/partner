@@ -94,7 +94,6 @@ class GroupGenerator:
                 return s
         return None
 
-    # TODO make attendance_before_gen a property of the section row.
     def create_groups(self, roster, start_date, date, attendance_before_gen=True):
         if attendance_before_gen:
             students = AttendanceMgr.get_present_students(roster, date)
