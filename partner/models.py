@@ -1,6 +1,6 @@
 from datetime import datetime
 from partner import db
-import requests
+from partner import util
 
 
 class Section(db.Model):
@@ -18,12 +18,19 @@ class Section(db.Model):
         d['title'] = self.full_title
         d['id'] = self.id
         d['number'] = self.number
+        d['start_date'] = util.date_to_mdy(self.start_date)
+        d['year'] = self.year
+        d['term'] = self.term
         return d
 
 
     @property
     def full_title (self):
         return "Lab {}: {}".format(self.number, self.title)
+
+    def __repr__ (self):
+        return "<Section {} number:{} year:{} term:{} title:{}>".format(self.id,self.number,
+        self.year, self.term, self.title)
 
 class Roster(db.Model):
     tablename__ = 'roster'

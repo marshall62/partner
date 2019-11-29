@@ -2,10 +2,12 @@ from flask_cors import cross_origin
 from flask import request, jsonify, Response
 
 from partner import app, util
+from partner.roster_admin import process_roster_file_upload
 from partner.models import Section, Group
 from partner.AttendanceMgr import AttendanceMgr
 from partner.GroupGenerator import GroupGenerator
 from partner import db
+import json
 
 # REST API endpoint to save a roster JSON.
 # body must contain secId, list of students, [date mm/dd/yyyy]
@@ -74,6 +76,45 @@ def post_groups ():
     groups = GroupGenerator().create_groups(r,sec.start_date,date, attendance_before_gen=attendance_based)
     db.session.commit()
     return jsonify([g.to_dict() for g in groups])
+
+@app.route('/sections/<sec_id>', methods=['POST'])
+@cross_origin()
+def set_section_roster_ (sec_id):
+    section = Section.query.filter_by(id=sec_id).first_or_404()
+    section.start_date = util.mdy_to_date(request.form.get('startDate'))
+    file = request.files['files']
+    # if user does not select file, browser also
+    # submit an empty part without filename
+    # if file.filename == '':
+    #     flash('No selected file')
+    #     return redirect(request.url)
+    process_roster_file_upload(file, section)
+    db.session.commit()
+    return jsonify({})
+
+@app.route('/sections2', methods=['POST'])
+@cross_origin()
+def set_sections ():
+    print("in set_sections")
+    term = request.form.get('term')
+    year = request.form.get('year')
+    sections = json.loads(request.form.get('sections'))
+    update_sections(term, year, sections)
+
+    # section.start_date = util.mdy_to_date(request.form.get('startDate'))
+    # file = request.files['files']
+    # process_roster_file_upload(file, section)
+    # db.session.commit()
+    return jsonify({})    
+
+def update_sections (term, year, sections_json):
+    for secj in sections_json:
+        if secj.get('id'):
+            sec = Section.query.filter_by(id=secj.get('id')).first_or_404()
+            sec.title = secj.get('title') if secj.get('title') else sec.title
+            sec.number = secj.get('number') if secj.get('number') else sec.number
+            sec.start_date = secj.get('start_date') if secj.get('start_date') else sec.start_date
+            print('updated\n', sec)
 
 # Returns existing groups for the section and date
 @app.route('/groups', methods=['GET'])
