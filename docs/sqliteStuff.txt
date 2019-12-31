@@ -10,3 +10,4 @@ SQLite CLI operations
 $sqlite3 partner.db
 > select * from student
 >.tables # lists tables
+>.schema section #shows section table definition

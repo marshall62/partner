@@ -98,23 +98,58 @@ def set_sections ():
     print("in set_sections")
     term = request.form.get('term')
     year = request.form.get('year')
+    #TODO make sure term & year are set in browser thru validation.
     sections = json.loads(request.form.get('sections'))
-    update_sections(term, year, sections)
+    files = request.files.getlist('files[]')
+    secs = write_sections(term, year, sections, files)
+    return jsonify([s.to_dict() for s in secs])
 
-    # section.start_date = util.mdy_to_date(request.form.get('startDate'))
-    # file = request.files['files']
-    # process_roster_file_upload(file, section)
-    # db.session.commit()
-    return jsonify({})    
-
-def update_sections (term, year, sections_json):
-    for secj in sections_json:
+def write_sections (term, year, sections_json, files):
+    res = []
+    file_index = 0
+    # start dates may be in one of two formats (a) mm/dd/yy or (b)yyyy-mm-ddThh:mm:ss
+    # depending on whether the start date comes from the datepicker (b) or if it
+    # is being taken from the existing db setting (a)
+    for i, secj in enumerate(sections_json):
+        # section records with a file associated in the uploaded form in db or is newly created.
+        # have a flag so that it can be extracted from the list of files.
+        if secj.get('fileIncluded'):
+            file = files[file_index]
+            file_index += 1
+        else: file = None
+        # an id indicates it already exists in the db and so we update it
         if secj.get('id'):
-            sec = Section.query.filter_by(id=secj.get('id')).first_or_404()
-            sec.title = secj.get('title') if secj.get('title') else sec.title
-            sec.number = secj.get('number') if secj.get('number') else sec.number
-            sec.start_date = secj.get('start_date') if secj.get('start_date') else sec.start_date
-            print('updated\n', sec)
+            res.append(update_section(secj,file))
+        elif term and year:
+            res.append(create_section(secj,file,term,year))
+    db.session.commit()
+    return res
+
+def update_section (secj, file):
+    sec = Section.query.filter_by(id=secj.get('id')).first_or_404()
+    sec.title = secj.get('short_title', sec.title)
+    sec.number = secj.get('number', sec.number)
+    if secj.get('start_date'):
+        start_date = util.str_to_date(secj.get('start_date'))
+        sec.start_date = start_date
+    if secj.get('fileIncluded'):
+        process_roster_file_upload(file, sec)
+    return sec
+
+def create_section (secj, file, term, year):
+    start_date = secj.get('start_date')
+    if start_date:
+        start_date = util.str_to_date(start_date)
+    else:
+        start_date = util.today()
+    newsec = Section(title=secj.get('short_title', ''),
+                     number=secj.get('number', 0),
+                     term=term, year=year,
+                     start_date=start_date)
+    db.session.add(newsec)
+    if secj.get('fileIncluded'):
+        process_roster_file_upload(file, newsec)
+    return newsec
 
 # Returns existing groups for the section and date
 @app.route('/groups', methods=['GET'])
@@ -164,9 +199,10 @@ def sections():
     # update the roster with the attendance for the date
     for sec in sections:
         d = sec.to_dict()
-        students = sec.roster.sorted_students()
-        AttendanceMgr.set_attendance_status(students, date)
-        rd = sec.roster.to_dict(students)
-        d['roster'] = rd
+        if sec.roster:
+            students = sec.roster.sorted_students()
+            AttendanceMgr.set_attendance_status(students, date)
+            rd = sec.roster.to_dict(students)
+            d['roster'] = rd
         l.append(d)
     return jsonify(l)

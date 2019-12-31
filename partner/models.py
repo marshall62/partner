@@ -16,6 +16,7 @@ class Section(db.Model):
     def to_dict (self):
         d = {}
         d['title'] = self.full_title
+        d['short_title'] = self.title
         d['id'] = self.id
         d['number'] = self.number
         d['start_date'] = util.date_to_mdy(self.start_date)

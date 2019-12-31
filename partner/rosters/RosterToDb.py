@@ -2,13 +2,10 @@ from partner.models import Roster, Student
 from partner import db
 import csv
 import re
-from partner import util
-
-
-name_map = {"studentName": "Student Name",  "oneCardId": "ID"}
-spreadsheet_headers = ['Student Name','ID'] #others come after these but we dont care about them
 
 class RosterToDb:
+    name_map = {"studentName": "Student Name", "oneCardId": "ID"}
+    spreadsheet_headers = ['Student Name', 'ID']  # others come after these but we dont care about them
 
     @property
     def roster (self):
@@ -23,52 +20,73 @@ class RosterToDb:
             db.session.no_autoflush
             self._roster = Roster.query.filter_by(section_id=section_id).first()
             if self._roster:
-                self.remove_all_students()
+                RosterToDb.remove_all_students(self._roster)
             else:
                 self._roster = Roster(section_id=section_id)
                 db.session.add(self._roster)
-            self.read_file(csv_file)
+            RosterToDb.read_file(csv_file, self._roster)
             db.session.commit()
         except Exception as exc:
             print(exc)
             db.session.rollback()
 
-    def remove_all_students (self):
-        # self.roster.students = []
-        for student in self._roster.students:
-            self._roster.students.remove(student)
+    @classmethod
+    def create_roster (cls, section, csv_file):
+        try:
+            secid = section.id
+            with db.session.no_autoflush:
+                roster = Roster.query.filter_by(section_id=secid).first()
+                if roster:
+                    cls.remove_all_students(roster)
+                else:
+                    roster = Roster(section_id=secid)
+                    db.session.add(roster)
+                    section.roster = roster
+                cls.read_file(csv_file, roster)
+            return roster
+        except Exception as exc:
+            print(exc)
+            db.session.rollback()
+
+    @staticmethod
+    def remove_all_students (roster):
+        for student in roster.students:
+            roster.students.remove(student)
 
 
      # TODO skip the junk at the beginning and get to the row of headers.
-    def read_file (self, csv_file):
+    @classmethod
+    def read_file (cls, csv_file, roster):
         # The first n lines of the csv file are junk and we need to skip until we see the lines following "Summary Class List"
         # following this will be a row of headers and then the data rows.
         with open(csv_file, newline='') as csvfile:
-            reader = csv.DictReader(csvfile, spreadsheet_headers)
+            reader = csv.DictReader(csvfile, RosterToDb.spreadsheet_headers)
             while True:
                 line = next(csvfile)
                 if line.startswith('Student Name'):
                     break
 
             for row in reader:
-                student = self.get_student_from_row(row)
-                self._roster.students.append(student)
+                student = cls.get_student_from_row(row)
+                roster.students.append(student)
 
 
     # read the student info from the line and find the student in the db from onecard id or else create a new one.
-    def get_student_from_row(self, row):
-        name = row[name_map["studentName"]].strip()
-        id = row[name_map["oneCardId"]].strip()
-        s, found = self.find_or_make_student(id)
+    @classmethod
+    def get_student_from_row(cls, row):
+        name = row[RosterToDb.name_map["studentName"]].strip()
+        id = row[RosterToDb.name_map["oneCardId"]].strip()
+        s, found = cls.find_or_make_student(id)
         # only set name for student that didn't exist in db.
         if s and not found:
-            fn, ln, nn = self.parse_student_name(name)
+            fn, ln, nn = cls.parse_student_name(name)
             s.first_name=fn
             s.last_name=ln
             s.nick_name=nn
         return s
 
-    def find_or_make_student (self, onecard):
+    @staticmethod
+    def find_or_make_student (onecard):
         found = True
         s = Student.query.filter_by(onecard_id=onecard).first()
         if not s:
@@ -78,17 +96,13 @@ class RosterToDb:
         return s, found
 
     # example student_name "Lebowitz-Lockard, Hannah C. (Happy)"
-    def parse_student_name (self, student_name):
+    @staticmethod
+    def parse_student_name (student_name):
         m = re.match('^(?P<lname>.*),\s*(?P<fname>\w*)(.*\((?P<nname>.*)\)|.*$)', student_name)
         fname = m.group('fname')
         lname = m.group('lname')
         nname = m.group('nname')
         return fname, lname, nname
 
-def test ():
-    RosterToDb(lab_num=1, meeting_time='wed1',
-               year=2019, semester='fall', start_date=util.mdy_to_date('05/10/2019'), csv_file='/home/david/dev/python/partner/tests/files/simple_new_classlist.csv')
-
-#test()
 
 

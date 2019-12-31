@@ -54,3 +54,14 @@ def str_to_dict (str):
         k,v = pair.split(':')
         d[k.strip()] = v.strip()
     return d
+
+# convert yyyy-mm-ddTHH:mm:ss to datetime.date
+def jsdate_to_date (str):
+    y,m,d = str.split('T')[0].split('-')
+    return datetime.date(month=int(m), day=int(d), year=int(y))
+
+def str_to_date (str):
+    if 'T' in str:
+        return jsdate_to_date(str)
+    else:
+        return mdy_to_date(str)
