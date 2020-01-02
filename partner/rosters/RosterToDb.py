@@ -1,11 +1,16 @@
 from partner.models import Roster, Student
 from partner import db
+from xlsx2csv import Xlsx2csv
+from werkzeug.utils import secure_filename
+from partner import app
+import os
 import csv
 import re
 
 class RosterToDb:
     name_map = {"studentName": "Student Name", "oneCardId": "ID"}
     spreadsheet_headers = ['Student Name', 'ID']  # others come after these but we dont care about them
+    ALLOWED_EXTENSIONS = {'xlsx'}
 
     @property
     def roster (self):
@@ -29,6 +34,25 @@ class RosterToDb:
         except Exception as exc:
             print(exc)
             db.session.rollback()
+
+    @classmethod
+    def process_roster_file_upload(cls, file, section):
+        if file and cls._allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            uploaded_filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            csv_filename = cls._filename_prefix(uploaded_filename) + '.' + 'csv'
+            file.save(uploaded_filename)
+            Xlsx2csv(uploaded_filename, outputencoding="utf-8").convert(csv_filename)
+            return cls.create_roster(section, csv_filename)
+
+    @staticmethod
+    def _filename_prefix(filename):
+        return filename.rsplit('.', 1)[0]
+
+    @staticmethod
+    def _allowed_file(filename):
+        return '.' in filename and \
+               filename.rsplit('.', 1)[1].lower() in RosterToDb.ALLOWED_EXTENSIONS
 
     @classmethod
     def create_roster (cls, section, csv_file):

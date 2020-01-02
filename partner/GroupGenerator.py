@@ -77,9 +77,13 @@ class GroupGenerator:
         return r
 
 
-
-
     def get_groups_csv (self, roster_id, date):
+        '''
+        Returns a list of CSV strings representing groups
+        :param roster_id:
+        :param date:
+        :return:
+        '''
         groups = Group.query.filter_by(roster_id=roster_id, date=date)
         rows = ""
         for g in groups:

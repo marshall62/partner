@@ -13,9 +13,6 @@ def process_roster_file_upload(file, section):
         csv_filename = _filename_prefix(uploaded_filename) + '.' + 'csv'
         file.save(uploaded_filename)
         Xlsx2csv(uploaded_filename, outputencoding="utf-8").convert(csv_filename)
-        # rdb = RosterToDb(section.id, csv_filename)
-        # roster = rdb.roster
-        # section.roster = roster
         return RosterToDb.create_roster(section,csv_filename)
 
 def _filename_prefix (filename):
