@@ -32,7 +32,7 @@ def get_current_year ():
     return today().year
 
 def get_term (dt):
-    if dt.month in [1,2,3,4,5]:
+    if dt.month < 6:
         return 'spring'
     else:
         return 'fall'
