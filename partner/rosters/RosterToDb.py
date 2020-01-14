@@ -6,6 +6,7 @@ from partner import app
 import os
 import csv
 import re
+import errno
 
 class RosterToDb:
     name_map = {"studentName": "Student Name", "oneCardId": "ID"}
@@ -41,6 +42,12 @@ class RosterToDb:
             filename = secure_filename(file.filename)
             uploaded_filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             csv_filename = cls._filename_prefix(uploaded_filename) + '.' + 'csv'
+            if not os.path.exists(os.path.dirname(csv_filename)):
+                try:
+                    os.makedirs(os.path.dirname(csv_filename))
+                except OSError as exc: # Guard against race condition
+                    if exc.errno != errno.EEXIST:
+                        raise
             file.save(uploaded_filename)
             Xlsx2csv(uploaded_filename, outputencoding="utf-8").convert(csv_filename)
             return cls.create_roster(section, csv_filename)

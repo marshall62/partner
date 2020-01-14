@@ -134,8 +134,8 @@ def sections():
 @app.route('/sections', methods=['POST'])
 @cross_origin()
 def set_sections ():
-    term = request.form.get('term')
-    year = request.form.get('year')
+    term = request.form.get('term', util.get_current_term())
+    year = request.form.get('year', util.get_current_year())
     #term and year get a default value in PUApp.js which intializes the PUAttendance componenent with these props.
     sections = json.loads(request.form.get('sections'))
     files = request.files.getlist('files[]')
