@@ -1,10 +1,13 @@
 import os
 from flask import Flask
-from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import logging.handlers
 from flask.logging import default_handler
+from flask_login import LoginManager
+from flask_cors import CORS
+
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 slashloc = basedir.rindex('/')
 projdir = basedir[:slashloc]
@@ -12,7 +15,11 @@ print("importing partner package")
 # per Flask doc, we hardcode the application package rather than use __name__
 app = Flask('partner')
 app.config.from_pyfile(os.path.join(projdir, 'config.cfg'))
-login = LoginManager(app)
+# N.B. It may be important to limit the CORS origins so that the fetch API calls can
+# pass credentials through cookies (which requires an origin be specified and not be *)
+CORS(app, resources={r"/rest/*": {"origins": "http://localhost:3000", "supports_credentials": True}})
+login_manager = LoginManager(app)
+login_manager.init_app(app)
 # db = SQLAlchemy(app,session_options={"autoflush": False})
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -47,3 +54,5 @@ def make_shell_context():
     print("I dont believe this is running")
     return {'db': db, 'Section': Section, 'Roster': Roster, 'Student': Student,
             'Group': Group, 'AttendanceEntry': AttendanceEntry}
+
+

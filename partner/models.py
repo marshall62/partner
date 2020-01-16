@@ -1,6 +1,7 @@
 from datetime import datetime
 from partner import db
 from partner import util
+from partner import login_manager
 
 
 class Section(db.Model):
@@ -139,3 +140,31 @@ class AttendanceEntry(db.Model):
         return '<Entry {} {}>'.format(self.date, self.value)
 
 
+class User(db.Model):
+    __tablename__ = 'user'
+
+    email = db.Column(db.String, primary_key=True)
+    password = db.Column(db.String)
+    authenticated = db.Column(db.Boolean, default=False)
+
+    def is_active(self):
+        return True
+
+    def get_id(self):
+        return self.email
+
+    def is_authenticated(self):
+        return self.authenticated
+
+    def is_anonymous(self):
+        return False
+
+@login_manager.user_loader
+def user_loader(user_id):
+    """Given *user_id*, return the associated User object.
+
+    :param unicode user_id: user_id (email) user to retrieve
+
+    """
+    u = User.query.get(user_id)
+    return u

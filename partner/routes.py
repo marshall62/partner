@@ -1,5 +1,4 @@
 from partner import app, db
-from partner.partner import generateGroups
 from partner import util
 from flask import request, render_template, flash, redirect, url_for, Response
 from flask_cors import CORS, cross_origin
@@ -8,7 +7,6 @@ from partner.AttendanceMgr import AttendanceMgr
 from partner.GroupGenerator import GroupGenerator
 from partner.rosters.RosterToDb import RosterToDb
 from partner.models import Section
-# from partner.ClassMgr import ClassMgr
 from partner import db
 from flask import jsonify
 from xlsx2csv import Xlsx2csv
@@ -24,7 +22,7 @@ ALLOWED_EXTENSIONS = {'xlsx'}
 # a simple page that says hello
 @app.route('/hello')
 def hello():
-    return 'Hello, Walden!'
+    return 'Hello!'
 
 @app.route('/index')
 def index():

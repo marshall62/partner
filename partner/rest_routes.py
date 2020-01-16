@@ -3,7 +3,7 @@ from flask import request, jsonify, Response
 
 from partner import app, util
 # from partner.roster_admin import process_roster_file_upload
-from partner.models import Section, Group, Roster
+from partner.models import Section, Group, Roster, User
 from partner.AttendanceMgr import AttendanceMgr
 from partner.GroupGenerator import GroupGenerator
 from partner.SectionMgr import SectionMgr
@@ -11,10 +11,51 @@ from partner.SectionMgr import SectionMgr
 from partner import db
 import json
 
+import bcrypt
+import flask_login
+from flask_login import login_required, current_user, logout_user
+
+
+@app.route('/rest/login-user', methods=['POST'])
+# @cross_origin()
+def login_user():
+    email = request.form.get('email')
+    password = request.form.get('password').encode()
+    user = User.query.get(email)
+
+    if user:
+        if bcrypt.checkpw(password, user.password):
+            user.authenticated = True
+            db.session.add(user)
+            db.session.commit()
+            flask_login.login_user(user, remember=True)
+            u = current_user
+            return jsonify()
+    return jsonify(message= "Incorrect email/password combination")
+
+@app.route('/rest/cookietest', methods=['GET'])
+@login_required
+def cookie_test ():
+    u = current_user
+    if u:
+        print(u.is_authenticated())
+
+@login_required
+@app.route('/rest/logout-user', methods=['POST'])
+# @cross_origin()
+def logout_user():
+    """Logout the current user."""
+    user = current_user
+    user.authenticated = False
+    db.session.add(user)
+    db.session.commit()
+    flask_login.logout_user()
+    return jsonify()
+
 # REST API endpoint to save a roster (student name changes + attendance) JSON.
 # body must contain secId, list of students, [date mm/dd/yyyy]
-@app.route('/rosters', methods=['POST'])
-@cross_origin()
+@app.route('/rest/rosters', methods=['POST'])
+# @cross_origin()
 def rosters_post ():
     json = request.get_json()
     sec_id = json.get('secId')
@@ -37,8 +78,8 @@ def rosters_post ():
 
 
 # REST API endpoint to get a roster (students plus attendance data for given date) as JSON.
-@app.route('/rosters', methods=['GET'])
-@cross_origin()
+@app.route('/rest/rosters', methods=['GET'])
+# @cross_origin()
 def rosters():
     year = request.args.get('year')
     term = request.args.get('term')
@@ -62,8 +103,8 @@ def rosters():
 
 # Process POST request to generate groups for a roster.  Writes to the db and returns JSON of the groups created
 # needs to be given a section id and date.
-@app.route('/groups', methods=['POST'])
-@cross_origin()
+@app.route('/rest/groups', methods=['POST'])
+# @cross_origin()
 def post_groups ():
     json = request.get_json()
     sec_id = json.get('secId')
@@ -82,8 +123,8 @@ def post_groups ():
 # API endpoint to get existing groups for the section and date
 # If the format=='csv', will produce CSV file with data and return it
 # otherwise
-@app.route('/groups', methods=['GET'])
-@cross_origin()
+@app.route('/rest/groups', methods=['GET'])
+# @cross_origin()
 def get_groups ():
     sec_id = request.args.get('secId')
     dt = request.args.get('date')
@@ -106,8 +147,9 @@ def get_groups ():
         return jsonify([g.to_dict() for g in groups])
 
 # REST API endpoint to get all sections as JSON.
-@app.route('/sections', methods=['GET'])
-@cross_origin()
+@app.route('/rest/sections', methods=['GET'])
+@login_required
+# @cross_origin()
 def sections():
     sec_id = request.args.get('id')
     year = request.args.get('year')
@@ -131,8 +173,9 @@ def sections():
 
 # Admin page POST of sections json.   Will update existing sections and create new ones.
 # Will return json of all the sections for term and year
-@app.route('/sections', methods=['POST'])
-@cross_origin()
+@app.route('/rest/sections', methods=['POST'])
+@login_required
+# @cross_origin()
 def set_sections ():
     term = request.form.get('term', util.get_current_term())
     year = request.form.get('year', util.get_current_year())
@@ -144,8 +187,8 @@ def set_sections ():
 
 
 # takes a request to get a csv attendance spreadsheet for a section. Returns a csv file
-@app.route('/attendance-csv', methods=['GET'])
-@cross_origin()
+@app.route('/rest/attendance-csv', methods=['GET'])
+# @cross_origin()
 def attendance_csv ():
     secId = request.args.get('secId')
     if secId:
