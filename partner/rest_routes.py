@@ -1,4 +1,3 @@
-from flask_cors import cross_origin
 from flask import request, jsonify, Response
 
 from partner import app, util
@@ -15,6 +14,19 @@ import bcrypt
 import flask_login
 from flask_login import login_required, current_user, logout_user
 
+@app.route('/rest/user', methods=['GET'])
+def get_user ():
+    user = current_user
+    if user.is_authenticated:
+        return jsonify({"user": user.email})
+    else:
+        return jsonify({})
+
+@app.route('/rest/term-year', methods=['GET'])
+def get_term_year ():
+    yr = app.config['YEAR']
+    term = app.config['TERM']
+    return jsonify({'year': yr, 'term': term})
 
 @app.route('/rest/login-user', methods=['POST'])
 # @cross_origin()
@@ -30,19 +42,12 @@ def login_user():
             db.session.commit()
             flask_login.login_user(user, remember=True)
             u = current_user
-            return jsonify()
+            return jsonify({})
     return jsonify(message= "Incorrect email/password combination")
 
-@app.route('/rest/cookietest', methods=['GET'])
-@login_required
-def cookie_test ():
-    u = current_user
-    if u:
-        print(u.is_authenticated())
 
 @login_required
 @app.route('/rest/logout-user', methods=['POST'])
-# @cross_origin()
 def logout_user():
     """Logout the current user."""
     user = current_user
@@ -55,7 +60,7 @@ def logout_user():
 # REST API endpoint to save a roster (student name changes + attendance) JSON.
 # body must contain secId, list of students, [date mm/dd/yyyy]
 @app.route('/rest/rosters', methods=['POST'])
-# @cross_origin()
+@login_required
 def rosters_post ():
     json = request.get_json()
     sec_id = json.get('secId')
@@ -79,7 +84,7 @@ def rosters_post ():
 
 # REST API endpoint to get a roster (students plus attendance data for given date) as JSON.
 @app.route('/rest/rosters', methods=['GET'])
-# @cross_origin()
+@login_required
 def rosters():
     year = request.args.get('year')
     term = request.args.get('term')
@@ -104,7 +109,7 @@ def rosters():
 # Process POST request to generate groups for a roster.  Writes to the db and returns JSON of the groups created
 # needs to be given a section id and date.
 @app.route('/rest/groups', methods=['POST'])
-# @cross_origin()
+@login_required
 def post_groups ():
     json = request.get_json()
     sec_id = json.get('secId')
@@ -124,7 +129,7 @@ def post_groups ():
 # If the format=='csv', will produce CSV file with data and return it
 # otherwise
 @app.route('/rest/groups', methods=['GET'])
-# @cross_origin()
+@login_required
 def get_groups ():
     sec_id = request.args.get('secId')
     dt = request.args.get('date')
@@ -149,7 +154,6 @@ def get_groups ():
 # REST API endpoint to get all sections as JSON.
 @app.route('/rest/sections', methods=['GET'])
 @login_required
-# @cross_origin()
 def sections():
     sec_id = request.args.get('id')
     year = request.args.get('year')
@@ -175,7 +179,6 @@ def sections():
 # Will return json of all the sections for term and year
 @app.route('/rest/sections', methods=['POST'])
 @login_required
-# @cross_origin()
 def set_sections ():
     term = request.form.get('term', util.get_current_term())
     year = request.form.get('year', util.get_current_year())
@@ -188,7 +191,7 @@ def set_sections ():
 
 # takes a request to get a csv attendance spreadsheet for a section. Returns a csv file
 @app.route('/rest/attendance-csv', methods=['GET'])
-# @cross_origin()
+@login_required
 def attendance_csv ():
     secId = request.args.get('secId')
     if secId:
