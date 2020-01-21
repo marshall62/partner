@@ -15,6 +15,10 @@ print("importing partner package")
 # per Flask doc, we hardcode the application package rather than use __name__
 app = Flask('partner')
 app.config.from_pyfile(os.path.join(projdir, 'config.cfg'))
+dburl = os.environ.get('DATABASE_URL')
+# prefer the environment db url so I can use other dbs in production
+if dburl:
+    app.config['SQLALCHEMY_DATABASE_URI'] = dburl
 # N.B. It may be important to limit the CORS origins so that the fetch API calls can
 # pass credentials through cookies (which requires an origin be specified and not be *)
 CORS(app, resources={r"/rest/*": {"origins": "http://localhost:3000", "supports_credentials": True}})
@@ -35,9 +39,8 @@ ch.setFormatter(logging.Formatter(
     '%(asctime)s %(levelname)s: [in %(pathname)s:%(lineno)d] %(message)s'))
 ch.setLevel(logging.DEBUG)
 app.logger.setLevel(logging.DEBUG)
-# We always have a file for a log of errors.  In dev environment, also log to console
-if app.config['ENV'] == 'development':
-    app.logger.addHandler(ch)
+# We always have a file for a log of errors.  Also log to console
+app.logger.addHandler(ch)
 app.logger.addHandler(fh)
 app.logger.debug("Starting app")
 app.logger.debug("---------------------------------------------------------")
