@@ -37,7 +37,7 @@ def test_insert ():
 @app.route('/test-get', methods=['GET'])
 def test_get ():
     id = request.args.get('id')
-    stud = Student.query.get(id)
+    stud = Student.query.get(int(id))
     return jsonify({'id': id, 'first_name': stud.first_name, 'last_name': stud.last_name})
 
 
