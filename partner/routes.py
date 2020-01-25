@@ -6,7 +6,7 @@ from partner.forms import LoginForm, AttendanceForm, AttendanceStudentForm
 from partner.AttendanceMgr import AttendanceMgr
 from partner.GroupGenerator import GroupGenerator
 from partner.rosters.RosterToDb import RosterToDb
-from partner.models import Section
+from partner.models import Section, Student
 from partner import db
 from flask import jsonify
 from xlsx2csv import Xlsx2csv
@@ -23,6 +23,23 @@ ALLOWED_EXTENSIONS = {'xlsx'}
 @app.route('/hello')
 def hello():
     return 'Hello!'
+
+@app.route('/test-insert', methods=['POST'])
+def test_insert ():
+    fname = request.form.get('fname')
+    lname = request.form.get('lname')
+    stud = Student(first_name=fname, last_name=lname)
+    db.session.add(stud)
+    db.session.commit()
+    id = stud.id
+    return jsonify({'id': id})
+
+@app.route('/test-get', methods=['GET'])
+def test_get ():
+    id = request.args.get('id')
+    stud = Student.query.get(id)
+    return jsonify({'id': id, 'first_name': stud.first_name, 'last_name': stud.last_name})
+
 
 @app.route('/index')
 def index():
