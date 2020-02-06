@@ -75,7 +75,8 @@ def rosters_post ():
     status_codes = [ s['status'] for s in students ]
     name_edits = [ True if s.get('edited') else False for s in students ]
     if True in name_edits:
-        names = [s['preferred_fname'] + ' ' + s['last_name'] for s in students ]
+        names = [s['full_name'] for s in students]
+        # names = [s['preferred_fname'] + ' ' + s['last_name'] for s in students ]
         AttendanceMgr.update_student_names2(r, name_edits, names)
     AttendanceMgr.update_attendance(r, date, status_codes)
     db.session.commit()

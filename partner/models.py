@@ -118,6 +118,7 @@ class Student(db.Model):
             'id': self.id,
             'onecard_id': self.onecard_id,
             'pic_url': self.pic_url,
+            'full_name': self.preferred_fname + ' ' + self.last_name,
             'preferred_fname': self.preferred_fname,
             'first_name': self.first_name,
             'nick_name': self.nick_name,
