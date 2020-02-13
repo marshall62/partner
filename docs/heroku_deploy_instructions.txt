@@ -1,0 +1,138 @@
+Deploying My Flask/React web app to Heroku
+
+Currently I run my Flask app on localhost:5000 and my react app on localhost:3000. 
+I have one script that launches them both by first entering my venv and starting flask and then 
+going to my react directory and starting the react server (which was created with create-react-app)
+#!/bin/bash
+source venv/bin/activate
+flask run&
+deactivate
+cd ~/dev/react/pairup
+npm start&
+
+-  Get a Heroku CLI app (get Heroku acct, install CLI, login first)
+sudo snap install --classic heroku
+heroku login
+
+- Create the flask app on heroku
+heroku apps:create flask-pairup
+
+gives back:
+https://flask-pairup.herokuapp.com/ | https://git.heroku.com/flask-pairup.git
+
+git -v // see the heroku git repos.
+
+- Create postgres db on heroku
+Need to use a non-file-based DB because Heroku wipes the virtual file system frequently.
+
+heroku addons:add heroku-postgresql:hobby-dev
+
+-Address of the db is stored in the environment variable DATABASE_URL.
+Make sure that the flask app uses this envvar rather than its default SQLALCHEMY_DATABASE_URI set in the config file.
+
+Change __init__.py to have:
+
+dburl = os.environ.get('DATABASE_URL')
+# prefer the environment db url so I can use other dbs in production
+if dburl:
+    app.config['SQLALCHEMY_DATABASE_URI'] = dburl
+
+- Add gunicorn and psycopg2-binary to venv and requirements.txt
+
+pip install gunicorn psycopg2-binary
+pip freeze > requirements.txt
+
+
+- Set the FLASK_APP in heroku
+heroku config:set FLASK_APP=partner.py
+
+- Create the Procfile in partner/Procfile with the line:
+web: flask db upgrade; flask translate compile; gunicorn microblog:app
+
+- make sure that I have run local db migrations with 
+flask db migrate 
+flask db upgrade
+commit the migration folder and contents to github (heroku takes these files rather than creating own version)
+
+- Push the repo to heroku
+> git push heroku master
+
+The partner app is now running on heroku and can be tested at:
+https://flask-pairup.herokuapp.com/
+
+Failure can be troubleshooted by logs
+
+heroku logs --tail
+
+Redeploy process:
+Make local changes.
+git push heroku master
+test https://flask-pairup.herokuapp.com/hello
+
+To test the database is working:
+Use a REST client like ARC:
+
+Send a POST request like: https://flask-pairup.herokuapp.com/test-insert
+content-type: multipart-form
+body: fname: david
+      lname: marshall
+
+Should receive:
+{
+"first_name": "david",
+"id": "3",
+"last_name": "marshall"
+}
+
+https://flask-pairup.herokuapp.com/test-get?id=3
+{
+"first_name": "david",
+"id": "3",
+"last_name": "marshall"
+}
+
+
+-----------------------------------------------------------
+
+React pairup-ui to heroku:
+
+Create the heroku app as above pairup-ui.
+
+add two new files to root of pairup
+.env
+  REACT_APP_BACKEND_URI=http://localhost:5000
+
+.env.production
+
+ REACT_APP_BACKEND_URI=https://flask-pairup.herokuapp.com
+
+Modify urls.js
+
+export class URLs {
+    static host = process.env.REACT_APP_BACKEND_URI;
+    static pre = URLs.host + "/rest/";
+
+Modify flask partner/__init__.py
+CORS(app, resources={r"/rest/*": {"origins": ["http://localhost:3000", "https://flask-pairup.herokuapp.com"], "supports_credentials": True}})
+
+
+React will read the .env file when starting in dev using npm start and the .env.production when running
+on heroku with npm build
+
+The CORS have been configured in flask to accept requests from the heroku react client.
+
+The Procfile for react is not necessary.
+I followed: https://blog.heroku.com/deploying-react-with-zero-configuration
+heroku create -b https://github.com/marshall62/pairup.git
+git push heroku master
+heroku open
+or 
+https://pairup-dm.herokuapp.com/
+
+And I get errors....
+
+
+
+
+
+
