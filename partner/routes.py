@@ -24,7 +24,7 @@ ALLOWED_EXTENSIONS = {'xlsx'}
 def hello():
     return 'Hello!'
 
-@app.route('/test-insert', methods=['POST'])
+@app.route('/api/test-insert', methods=['POST'])
 def test_insert ():
     fname = request.form.get('fname')
     lname = request.form.get('lname')
@@ -34,7 +34,7 @@ def test_insert ():
     id = stud.id
     return jsonify({'id': id})
 
-@app.route('/test-get', methods=['GET'])
+@app.route('/api/test-get', methods=['GET'])
 def test_get ():
     id = request.args.get('id')
     stud = Student.query.get(int(id))
