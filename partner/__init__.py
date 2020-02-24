@@ -21,7 +21,7 @@ if dburl:
     app.config['SQLALCHEMY_DATABASE_URI'] = dburl
 # N.B. It may be important to limit the CORS origins so that the fetch API calls can
 # pass credentials through cookies (which requires an origin be specified and not be *)
-CORS(app, resources={r"/rest/*": {"origins": ["http://localhost:3000", "http://localhost:3001", "http://flask-pairup.herokuapp.com"], "supports_credentials": True}})
+CORS(app, resources={r"/rest/*": {"origins": ["http://localhost:3000", "http://localhost:3001", "https://pairup-dm.herokuapp.com","http://pairup-dm.herokuapp.com"], "supports_credentials": True}})
 login_manager = LoginManager(app)
 login_manager.init_app(app)
 # db = SQLAlchemy(app,session_options={"autoflush": False})
