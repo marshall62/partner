@@ -91,6 +91,12 @@ https://flask-pairup.herokuapp.com/test-get?id=3
 "last_name": "marshall"
 }
 
+N.B.  I've had to manually edit my .git/config file so that git push heroku master works 
+[remote "heroku"]
+	url = https://git.heroku.com/flask-pairup.git
+	fetch = +refs/heads/*:refs/remotes/heroku/*	
+
+
 
 -----------------------------------------------------------
 
@@ -130,6 +136,34 @@ or
 https://pairup-dm.herokuapp.com/
 
 And I get errors....
+
+The https protocol appears to be problematic. 
+I built a basic react app which is created using the bootstrapping.  (dev/react/basic).  I deploy to heroku and find that it will
+not correctly show in browser until I change its URL to http://basic-dm.herokuapp.com/
+
+Now to test that it can communicate with my backend I add some input fields and buttons for GET and POST.
+I configure a proxy in the package.json like "proxy": "http://localhost:5000"
+I use this in my dev environment and find that the basic react app can send these requests to my flask backend.
+However when I deploy to heroku this fails with error "Invalid Host Header"  I see that this may be because 
+heroku is requiring a newwer way to proxy as described here: https://stackoverflow.com/questions/49165232/reactjs-app-in-heroku-invalid-host-header-host-configuration
+
+In ui did:
+npm install http-proxy-middleware --save
+created setupProxy.js in /src dir  contents looks like:
+
+const proxy = require("http-proxy-middleware");
+
+module.exports = function(app) {
+  app.use(
+    proxy(["/api"], { target: "http://localhost:5000" })
+  );
+};
+
+This required changing the routes in my backend to be /api/test-insert and /api/test-get
+
+Remove the "proxy": "http..." from package.json because the setupProxy.js .  This works locally.
+
+Now deploy the react app with this form of proxying.
 
 
 

@@ -6,7 +6,17 @@ import bcrypt
 from partner import app, db
 from partner.models import User
 
-def main():
+def create_user (email, pw):
+    salt = bcrypt.gensalt()
+    hashed_pw = bcrypt.hashpw(pw.encode(), salt)
+    user = User(
+        email=email,
+        password=hashed_pw)
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+def create_users():
     """Main entry point for script."""
     with app.app_context():
         db.metadata.create_all(db.engine)
@@ -20,15 +30,9 @@ def main():
         email = input()
         password = getpass()
         assert password == getpass('Password (again):')
-        salt = bcrypt.gensalt()
-        hashed_pw = bcrypt.hashpw(password.encode(), salt)
-        user = User(
-            email=email,
-            password=hashed_pw)
-        db.session.add(user)
-        db.session.commit()
+        create_user(email, password)
         print('User added.')
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(create_users())

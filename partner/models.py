@@ -160,6 +160,9 @@ class User(db.Model):
     def is_anonymous(self):
         return False
 
+    def to_dict (self):
+        return {'email': self.email, 'password': self.password}
+
 @login_manager.user_loader
 def user_loader(user_id):
     """Given *user_id*, return the associated User object.

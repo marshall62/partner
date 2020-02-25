@@ -3,6 +3,7 @@ from flask import request, jsonify, Response
 from partner import app, util
 # from partner.roster_admin import process_roster_file_upload
 from partner.models import Section, Group, Roster, User
+import partner.create_user
 from partner.AttendanceMgr import AttendanceMgr
 from partner.GroupGenerator import GroupGenerator
 from partner.SectionMgr import SectionMgr
@@ -151,6 +152,15 @@ def get_groups ():
     else:
         groups = Group.query.filter_by(roster_id=r.id, date=date).all()
         return jsonify([g.to_dict() for g in groups])
+
+# REST API endpoint to get all sections as JSON.
+@app.route('/rest/create-user', methods=['POST'])
+def create_user ():
+    email = request.form.get('email')
+    password = request.form.get('password')
+    user = partner.create_user.create_user(email, password)
+    return jsonify(user.to_dict())
+
 
 # REST API endpoint to get all sections as JSON.
 @app.route('/rest/sections', methods=['GET'])
