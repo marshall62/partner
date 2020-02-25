@@ -34,5 +34,5 @@ def create_users():
         print('User added.')
 
 
-if __name__ == '__main__':
-    sys.exit(create_users())
+# if __name__ == '__main__':
+#     sys.exit(create_users())
