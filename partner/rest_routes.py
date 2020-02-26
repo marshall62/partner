@@ -34,6 +34,10 @@ def get_term_year ():
 def create_user ():
     email = request.form.get('email')
     password = request.form.get('password')
+    print("looking up user {}".format(email))
+    user = User.query.get(email)
+    if user:
+        return jsonify({'status': 'FAILURE ALREADY EXISTS'})
     print("Generating user {} {}".format(email,password))
     user = partner.create_user.create_user(email, password)
     print("created with hashed pw {} {}".format(user.password, type(user.password)))

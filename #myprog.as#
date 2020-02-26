@@ -1,0 +1,8 @@
+def my_function (myNewVar,y):
+    variable = 'This is a  temyNewVart'
+    myNewVar = 10
+    this_large_variable = 10
+    
+    print(myNewVar,y)
+    print(y,'more stuff')
+    kjkd kk = lkdjlk

@@ -1,0 +1,6 @@
+def my_function (x,y):
+    variable = 'This is a  text'
+    x = 10
+    this_large_variable = 10
+    
+    print(x,y)
