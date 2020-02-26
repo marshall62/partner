@@ -161,7 +161,7 @@ class User(db.Model):
         return False
 
     def to_dict (self):
-        return {'email': self.email, 'password': self.password}
+        return {'email': self.email, 'authenticated': self.authenticated}
 
 @login_manager.user_loader
 def user_loader(user_id):

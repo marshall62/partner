@@ -29,6 +29,40 @@ def get_term_year ():
     term = app.config['TERM']
     return jsonify({'year': yr, 'term': term})
 
+# create a login.  No UI for this. 
+@app.route('/rest/create-user', methods=['POST'])
+def create_user ():
+    email = request.form.get('email')
+    password = request.form.get('password')
+    print("Generating user {} {}".format(email,password))
+    user = partner.create_user.create_user(email, password)
+    print("created with hashed pw {} {}".format(user.password, type(user.password)))
+    return jsonify(user.to_dict())
+
+@app.route('/rest/check-user', methods=['GET'])
+def check_user ():
+    email = request.args.get('email')
+    user = User.query.get(email)
+    if user:
+        return jsonify(user.to_dict())
+    else: return jsonify({'status': 'NOT FOUND'})
+
+@app.route('/rest/delete-user', methods=['DELETE'])
+def delete_user ():
+    email = request.form.get('email')
+    print("Deleting user with email {}".format(email))
+    u = User.query.get(email)
+    if not u:
+        return (jsonify({'status': 'NOT FOUND'}))
+    db.session.delete(u)
+    db.session.commit()
+    u = User.query.get(email)
+    if not u:
+        return jsonify({'status': 'SUCCESSFUL DELETE', 'email': email})
+    else:
+        return jsonify({'status': 'FAILURE'})
+
+
 @app.route('/rest/login-user', methods=['POST'])
 # @cross_origin()
 def login_user():
@@ -153,13 +187,6 @@ def get_groups ():
         groups = Group.query.filter_by(roster_id=r.id, date=date).all()
         return jsonify([g.to_dict() for g in groups])
 
-# REST API endpoint to get all sections as JSON.
-@app.route('/rest/create-user', methods=['POST'])
-def create_user ():
-    email = request.form.get('email')
-    password = request.form.get('password')
-    user = partner.create_user.create_user(email, password)
-    return jsonify(user.to_dict())
 
 
 # REST API endpoint to get all sections as JSON.
