@@ -1,4 +1,4 @@
-Linux instructions for Project set up
+--Linux instructions for Project set up
 
 Make sure your python has pip included:
     sudo apt update
