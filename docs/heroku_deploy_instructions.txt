@@ -1,3 +1,72 @@
+Release Notes necessary to put a new ui or backend on heroku:
+
+Flask Backend:
+
+Any db changes in models.py need to be tested locally first with
+venv
+flask db migrate
+flask db upgrade
+
+
+Release to heroku
+
+git add files
+git commit -m "comment"
+git push heroku master
+
+Issues/TODOs:
+
+Make sure there is an instructor user/pw:
+
+Use a REST tool like postman to create:
+POST https://flask-pairup.herokuapp.com/rest/create-instructor 
+   email: goober
+   password: blee
+
+GET https://flask-pairup.herokuapp.com/rest/check-instructor?email=goober
+
+DELETE https://flask-pairup.herokuapp.com/delete-instructor
+  email: goober
+
+Files that are currently somewhat dependent on environment:
+partner/__init__.py:  Sets up CORS hosts that the backend is willing to accept requests from (e.g. heroku and localhost) 
+The database URL is also fetched here.  I think that I set an environment variable in heroku that points to postgres.
+If there is not env var set, it pulls the database url from config.cfg (which points to my local sqlite db)
+
+
+-------------------------------------------------------------
+
+UI:
+
+
+manually edit .env so that it points to  https://flask-pairup.herokuapp.com/
+USE_CORS (which is currently working) must be true
+git add files
+git commit -m "comment"
+git push heroku master
+
+
+Issues/TODOs:
+
+Communication with backend has two general options (see urls.js)
+Use CORS:  Make requests to backend with full URLs like https://flask-pairup.herokuapp.com/rest/login-user
+Use proxy: Make requests to backend with partial URL like /api/rest/login-user
+
+Issues to resolve:
+CORS:  host in dev environment is diff from heroku.  Need to obtain from config file.  The react server on heroku 
+runs in development mode which means it loads the .env file to obtain the host and USE_CORS flag.  This means I have to 
+manually edit the .env file before pushing to heroku.
+
+Proxying works well in dev environment where there is a setupProxy.js file that specifies the URL OR I can add a proxy to
+package.json.  Both have worked but setupProxy is better because it can take the URL host from the .env file whereas package.json 
+has a fixed proxy value that must change for dev or heroku.  
+Because react runs as mode=development on heroku I have to hand-edit .env.  To get it to read .env.production I have to run
+react differently.  I began to figure it out.  It involves using a server.js file and changing how package.json starts node and react.
+This correctly runs it in production mode, but then the proxying failed to work probably because that server.js is not right.
+
+
+---------------------------------
+
 Deploying My Flask/React web app to Heroku
 
 Currently I run my Flask app on localhost:5000 and my react app on localhost:3000. 

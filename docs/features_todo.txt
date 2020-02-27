@@ -1,3 +1,20 @@
+Switch to using postgres in dev environment (until I'm really running on the cloud with all functions working well)
+
+Get unit testing of REST API working
+
+Get some kind of testing of the front-end working (e.g. learn selenium a bit)
+
+Re-establish automated unit tests on push
+
+factor out the old routes and any other remnants of the old partner system.
+
+Write a full README
+
+Complete the description of what it takes to deploy to heroku esp with CORS or proxy or whatever ends up working
+
+Incorporate Redux with React
+
+Switch to typescript
 
 
 Smith server contact person:  Suzanne Palmer (recommended by Dominique)
