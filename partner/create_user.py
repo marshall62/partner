@@ -4,7 +4,7 @@ from getpass import getpass
 import sys
 import bcrypt
 from partner import app, db
-from partner.models import User
+from partner.models import User, Instructor
 
 def create_user (email, pw):
     salt = bcrypt.gensalt()
@@ -15,6 +15,17 @@ def create_user (email, pw):
     db.session.add(user)
     db.session.commit()
     return user
+
+
+def create_instructor (email, pw):
+    salt = bcrypt.gensalt()
+    hashed_pw = bcrypt.hashpw(pw.encode(), salt)
+    inst = Instructor(
+        email=email,
+        password=hashed_pw)
+    db.session.add(inst)
+    db.session.commit()
+    return inst
 
 def create_users():
     """Main entry point for script."""

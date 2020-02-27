@@ -143,7 +143,6 @@ class AttendanceEntry(db.Model):
 
 class User(db.Model):
     __tablename__ = 'user'
-
     email = db.Column(db.String, primary_key=True)
     password = db.Column(db.LargeBinary)
     authenticated = db.Column(db.Boolean, default=False)
@@ -151,7 +150,7 @@ class User(db.Model):
     def is_active(self):
         return True
 
-    def get_id(self):
+    def get_email(self):
         return self.email
 
     def is_authenticated(self):
@@ -161,7 +160,32 @@ class User(db.Model):
         return False
 
     def to_dict (self):
-        return {'email': self.email, 'authenticated': self.authenticated}
+        return { 'email': self.email, 'authenticated': self.authenticated}
+
+
+class Instructor(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String)
+    password = db.Column(db.LargeBinary)
+    authenticated = db.Column(db.Boolean, default=False)
+
+    def is_active(self):
+        return True
+
+    def get_id (self):
+        return self.id
+
+    def get_email(self):
+        return self.email
+
+    def is_authenticated(self):
+        return self.authenticated
+
+    def is_anonymous(self):
+        return False
+
+    def to_dict (self):
+        return { 'id': self.id, 'email': self.email, 'authenticated': self.authenticated}
 
 @login_manager.user_loader
 def user_loader(user_id):
@@ -170,5 +194,5 @@ def user_loader(user_id):
     :param unicode user_id: user_id (email) user to retrieve
 
     """
-    u = User.query.get(user_id)
+    u = Instructor.query.get(user_id)
     return u

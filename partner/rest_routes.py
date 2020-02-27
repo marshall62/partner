@@ -2,7 +2,7 @@ from flask import request, jsonify, Response
 
 from partner import app, util
 # from partner.roster_admin import process_roster_file_upload
-from partner.models import Section, Group, Roster, User
+from partner.models import Section, Group, Roster, User, Instructor
 import partner.create_user
 from partner.AttendanceMgr import AttendanceMgr
 from partner.GroupGenerator import GroupGenerator
@@ -30,49 +30,49 @@ def get_term_year ():
     return jsonify({'year': yr, 'term': term})
 
 # create a login.  No UI for this. 
-@app.route('/rest/create-user', methods=['POST'])
-def create_user ():
+@app.route('/rest/create-instructor', methods=['POST'])
+def create_instructor ():
     email = request.form.get('email')
     password = request.form.get('password')
-    print("looking up user {}".format(email))
-    user = User.query.get(email)
-    if user:
+    print("looking up instructor {}".format(email))
+    instructor = Instructor.query.filter_by(email=email).first()
+    if instructor:
         return jsonify({'status': 'FAILURE ALREADY EXISTS'})
-    print("Generating user {} {}".format(email,password))
-    user = partner.create_user.create_user(email, password)
-    print("created with hashed pw {} {}".format(user.password, type(user.password)))
-    return jsonify(user.to_dict())
+    print("Generating instructor {} {}".format(email,password))
+    instructor = partner.create_user.create_instructor(email, password)
+    print("created with hashed pw {} {} {}".format(instructor.id, instructor.password, type(instructor.password)))
+    return jsonify(instructor.to_dict())
 
-@app.route('/rest/check-user', methods=['GET'])
-def check_user ():
+@app.route('/rest/check-instructor', methods=['GET'])
+def check_instructor ():
     email = request.args.get('email')
-    user = User.query.get(email)
-    if user:
-        return jsonify(user.to_dict())
+    instructor = Instructor.query.filter_by(email=email).first()
+    if instructor:
+        return jsonify(instructor.to_dict())
     else: return jsonify({'status': 'NOT FOUND'})
 
-@app.route('/rest/delete-user', methods=['DELETE'])
-def delete_user ():
+@app.route('/rest/delete-instructor', methods=['DELETE'])
+def delete_instructor ():
     email = request.form.get('email')
     print("Deleting user with email {}".format(email))
-    u = User.query.get(email)
+    u = Instructor.query.filter_by(email=email).first()
     if not u:
         return (jsonify({'status': 'NOT FOUND'}))
     db.session.delete(u)
     db.session.commit()
-    u = User.query.get(email)
+    u = Instructor.query.filter_by(email=email).first()
     if not u:
         return jsonify({'status': 'SUCCESSFUL DELETE', 'email': email})
     else:
         return jsonify({'status': 'FAILURE'})
 
 
-@app.route('/rest/login-user', methods=['POST'])
+@app.route('/rest/login-instructor', methods=['POST'])
 # @cross_origin()
 def login_user():
     email = request.form.get('email')
     password = request.form.get('password').encode()
-    user = User.query.get(email)
+    user = Instructor.query.filter_by(email=email).first()
 
     if user:
         if bcrypt.checkpw(password, user.password):
@@ -86,7 +86,7 @@ def login_user():
 
 
 @login_required
-@app.route('/rest/logout-user', methods=['POST'])
+@app.route('/rest/logout-instructor', methods=['POST'])
 def logout_user():
     """Logout the current user."""
     user = current_user
