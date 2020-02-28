@@ -10122,3 +10122,17 @@ AttributeError: 'Instructor' object has no attribute 'get_id'
 2020-02-26 16:26:19,907 DEBUG: [in /home/david/dev/pairup/backend/partner/__init__.py:46] MainThread ---------------------------------------------------------
 2020-02-27 07:48:06,425 DEBUG: [in /home/david/dev/pairup/backend/partner/__init__.py:45] MainThread Starting app
 2020-02-27 07:48:06,425 DEBUG: [in /home/david/dev/pairup/backend/partner/__init__.py:46] MainThread ---------------------------------------------------------
+2020-02-27 12:16:46,674 DEBUG: [in /home/david/dev/pairup/backend/partner/__init__.py:45] MainThread Starting app
+2020-02-27 12:16:46,675 DEBUG: [in /home/david/dev/pairup/backend/partner/__init__.py:46] MainThread ---------------------------------------------------------
+2020-02-27 19:09:44,342 DEBUG: [in /home/david/dev/pairup/backend/partner/__init__.py:45] MainThread Starting app
+2020-02-27 19:09:44,342 DEBUG: [in /home/david/dev/pairup/backend/partner/__init__.py:46] MainThread ---------------------------------------------------------
+2020-02-27 19:17:46,441 DEBUG: [in /home/david/dev/pairup/backend/partner/__init__.py:52] MainThread Starting app
+2020-02-27 19:17:46,442 DEBUG: [in /home/david/dev/pairup/backend/partner/__init__.py:53] MainThread ---------------------------------------------------------
+2020-02-27 19:18:03,924 DEBUG: [in /home/david/dev/pairup/backend/partner/__init__.py:52] MainThread Starting app
+2020-02-27 19:18:03,924 DEBUG: [in /home/david/dev/pairup/backend/partner/__init__.py:53] MainThread ---------------------------------------------------------
+2020-02-28 09:10:43,769 DEBUG: [in /home/david/dev/pairup/backend/partner/__init__.py:52] MainThread Starting app
+2020-02-28 09:10:43,782 DEBUG: [in /home/david/dev/pairup/backend/partner/__init__.py:53] MainThread ---------------------------------------------------------
+2020-02-28 09:17:24,386 DEBUG: [in /home/david/dev/pairup/backend/partner/__init__.py:56] MainThread Starting app
+2020-02-28 09:17:24,399 DEBUG: [in /home/david/dev/pairup/backend/partner/__init__.py:57] MainThread ---------------------------------------------------------
+2020-02-28 09:17:49,722 DEBUG: [in /home/david/dev/pairup/backend/partner/__init__.py:56] MainThread Starting app
+2020-02-28 09:17:49,722 DEBUG: [in /home/david/dev/pairup/backend/partner/__init__.py:57] MainThread ---------------------------------------------------------

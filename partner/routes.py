@@ -38,6 +38,7 @@ def test_insert ():
 def test_get ():
     id = request.args.get('id')
     stud = Student.query.get(int(id))
+    print("GET request for student id:",id," returns", stud.first_name, stud.last_name)
     return jsonify({'id': id, 'first_name': stud.first_name, 'last_name': stud.last_name})
 
 

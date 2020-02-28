@@ -14,7 +14,12 @@ git add files
 git commit -m "comment"
 git push heroku master
 
+
+
 Issues/TODOs:
+
+heroku pg:info info about the db
+heroku pg:reset drop the db (did this when things were messed up with migrations)
 
 Make sure there is an instructor user/pw:
 
