@@ -11,3 +11,32 @@ $sqlite3 partner.db
 > select * from student
 >.tables # lists tables
 >.schema section #shows section table definition
+
+
+Backup/Restore
+
+sqlite3 partner.db .backup > partner.backup
+
+restore:
+rm existing partner.db
+sqlite3 partner.db < partner.backup
+
+
+Set up SQLite3 db for first time with the Flask app
+
+make sure that config.cfg has correct path to db. e.g.
+SQLALCHEMY_DATABASE_URI='sqlite:////srv/raiddisk/dev/pairup/partner/partner/partner.db'
+
+N.B.: db needs to live in same dir as the __init__.py that is where the flask app is taken
+from
+
+source venv/bin/activate
+
+rm migrations dir
+
+in project root dir (pairup/partner)
+flask db init
+
+cd into partner/partner dir (where __init__.py is)
+
+
