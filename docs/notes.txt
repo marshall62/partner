@@ -1,1 +1,3 @@
 Last download of spring 2020 rosters is 3/3/2020
+
+added ~/.ssh/config file to tell git command line to use my ssh keys so it won't prompt about github credentials when I push
