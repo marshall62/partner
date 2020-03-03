@@ -1,0 +1,8 @@
+/.idea/*.xml
+partner.db
+output.log
+/uploads/*
+/venv/*
+/partner/rosters/*
+/partner/__pycache__/*
+/pycache/*
