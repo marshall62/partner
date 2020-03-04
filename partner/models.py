@@ -58,7 +58,7 @@ class Roster(db.Model):
         return l
 
     def __repr__(self):
-        return '<Lab-{} {} {} {}>'.format(self.section.lab_num, self.section.year, self.term, self.section.title)
+        return '{} <Lab-{} {} {} {}>'.format(self.id, self.section.lab_num, self.section.year, self.term, self.section.title)
 
 group2student = db.Table('group2student',
     db.Column('group_id', db.Integer, db.ForeignKey('group.id'), primary_key=True),
@@ -127,7 +127,7 @@ class Student(db.Model):
         }
 
     def __repr__(self):
-        return '<{} {} {}>'.format(self.first_name, self.nick_name, self.last_name)
+        return '<{} {} {} {} {} class:{}>'.format(self.id, self.onecard_id, self.first_name, self.nick_name, self.last_name, self.class_id)
 
 
 class AttendanceEntry(db.Model):

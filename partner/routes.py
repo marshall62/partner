@@ -5,7 +5,7 @@ from flask_cors import CORS, cross_origin
 from partner.forms import LoginForm, AttendanceForm, AttendanceStudentForm
 from partner.AttendanceMgr import AttendanceMgr
 from partner.GroupGenerator import GroupGenerator
-from partner.rosters.RosterToDb import RosterToDb
+from partner.RosterToDb import RosterToDb
 from partner.models import Section, Student
 from partner import db
 from flask import jsonify
