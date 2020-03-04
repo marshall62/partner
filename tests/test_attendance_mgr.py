@@ -1,14 +1,23 @@
 import os
+from partner import app, db, basedir
 from partner.AttendanceMgr import AttendanceMgr
 import datetime
-from partner.models import Roster, Student, AttendanceEntry
+from partner.models import Roster, Section, Student, AttendanceEntry
+
 class TestAttendanceMgr:
+
+    # called once at beginning of suite to create an empty db.
+    @classmethod
+    def setup_class(cls):
+        app.config['TESTING'] = True
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'test.db')
+        cls.app = app.test_client()
+        db.create_all()
 
     def test_term_dates (self):
         end = datetime.date(year=2019, month=8, day=10)
         start = end - datetime.timedelta(days=28)
-        r = Roster(start_date=start)
-        dates = AttendanceMgr.get_term_dates(r,end)
+        dates = AttendanceMgr.get_term_dates(start,end)
         assert '07/13/19' == dates[0].strftime('%m/%d/%y')
         assert '07/20/19' == dates[1].strftime('%m/%d/%y')
         assert '07/27/19' == dates[2].strftime('%m/%d/%y')
@@ -38,21 +47,15 @@ class TestAttendanceMgr:
         s2.attendance.append(e3)
         s2.attendance.append(e4)
         s2.attendance.append(e5)
-        r = Roster(start_date=start)
-        r.students.append(s1)
-        r.students.append(s2)
-        dates, rows = AttendanceMgr.generate_attendance(r, end)
-        assert dates == ['07/13/2019', '07/20/2019', '07/27/2019', '08/03/2019', '08/10/2019']
-        assert rows[0] == 'Chloe Smith,,A,,,'
-        assert rows[1] == 'Jill Barker,,AO,A,A,AO'
 
-    # flawed because it uses a real roster which doesn't have a history. but does show the students and the dates.
-    def test2 (self):
-        r = Roster.query.filter_by(id=1).first()
-        end = datetime.date(year=2019, month=8, day=10)
-        dates, rows = AttendanceMgr.generate_attendance(r, end)
-        print(dates)
-        for r in rows:
-            print(r)
+        csv_output = AttendanceMgr.generate_attendance([s1, s2], start, end)
+        lines = csv_output.split('\n')
+        header = lines[0]
+        header_items = header.split(',')
+        assert header_items[1:] == ['07/13/2019', '07/20/2019', '07/27/2019', '08/03/2019', '08/10/2019']
+        assert lines[1] == 'Chloe Smith,,A,,,'
+        assert lines[2] == 'Jill Barker,,AO,A,A,AO'
+
+
 
 

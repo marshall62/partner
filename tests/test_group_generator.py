@@ -1,12 +1,26 @@
 from partner.models import Group,Student, Roster, Section
 from partner.GroupGenerator import GroupGenerator
-from sqlalchemy import and_
+import os
 import util
-import pytest
+from partner import app, db, basedir
 
-class TestGroupGenerator:
+class TestGroupGenerator():
 
+    # called once at beginning of suite to create an empty db.
+    @classmethod
+    def setup_class(cls):
+        app.config['TESTING'] = True
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'test.db')
+        cls.app = app.test_client()
+        db.create_all()
 
+    @classmethod
+    def teardown_class(cls):
+        pass
+
+    # called at the beginning of each test.
+    def setup(self):
+        pass
 
     def test_gen_all_possible_groups (self):
         l = [1,2,3,4,5]
@@ -14,8 +28,6 @@ class TestGroupGenerator:
         a = gen._generate_all_possible_groups(l)
         assert len(a) == 10
         assert a == [[1,2],[1,3],[1,4],[1,5],[2,3],[2,4],[2,5],[3,4],[3,5],[4,5]]
-
-
 
 
 
@@ -49,19 +61,7 @@ class TestGroupGenerator:
 
 
 
-
-    @pytest.mark.skip(reason="slow test")
-    def test_create_groups (self):
-        sec = Section.query.filter_by(id=5).first()
-        r = Roster.query.filter_by(section_id=sec.id).first()
-        gen = GroupGenerator()
-        dt = util.mdy_to_date('09/15/2019')
-        start_dt = util.mdy_to_date('09/11/2019')
-        for i in range(50):
-            gps = gen.create_groups(r,start_dt,dt,attendance_before_gen=False)
-            assert len(a) == 15
-
-    @pytest.mark.skip(reason="slow test")
+    # @pytest.mark.skip(reason="slow test")
     def test_create_groups2 (self):
         r = Roster()
         s1 = Student(onecard_id=1, first_name='a')

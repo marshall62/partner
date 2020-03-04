@@ -14,6 +14,7 @@ import json
 import bcrypt
 import flask_login
 from flask_login import login_required, current_user, logout_user
+from flask_api import status
 
 @app.route('/rest/user', methods=['GET'])
 def get_user ():
@@ -30,41 +31,41 @@ def get_term_year ():
     return jsonify({'year': yr, 'term': term})
 
 # create a login.  No UI for this. 
-@app.route('/rest/create-instructor', methods=['POST'])
+@app.route('/rest/instructor', methods=['POST'])
 def create_instructor ():
     email = request.form.get('email')
     password = request.form.get('password')
     print("looking up instructor {}".format(email))
     instructor = Instructor.query.filter_by(email=email).first()
     if instructor:
-        return jsonify({'status': 'FAILURE ALREADY EXISTS'})
+        return jsonify({'status': 'FAILURE ALREADY EXISTS'}), status.HTTP_409_CONFLICT
     print("Generating instructor {} {}".format(email,password))
     instructor = partner.create_user.create_instructor(email, password)
     print("created with hashed pw {} {} {}".format(instructor.id, instructor.password, type(instructor.password)))
     return jsonify(instructor.to_dict())
 
-@app.route('/rest/check-instructor', methods=['GET'])
+@app.route('/rest/instructor', methods=['GET'])
 def check_instructor ():
     email = request.args.get('email')
     instructor = Instructor.query.filter_by(email=email).first()
     if instructor:
-        return jsonify(instructor.to_dict())
-    else: return jsonify({'status': 'NOT FOUND'})
+        return jsonify(instructor.to_dict()), status.HTTP_200_OK
+    else: return {}, status.HTTP_404_NOT_FOUND
 
-@app.route('/rest/delete-instructor', methods=['DELETE'])
+@app.route('/rest/instructor', methods=['DELETE'])
 def delete_instructor ():
     email = request.form.get('email')
     print("Deleting user with email {}".format(email))
     u = Instructor.query.filter_by(email=email).first()
     if not u:
-        return (jsonify({'status': 'NOT FOUND'}))
+        return {}, status.HTTP_404_NOT_FOUND
     db.session.delete(u)
     db.session.commit()
     u = Instructor.query.filter_by(email=email).first()
     if not u:
-        return jsonify({'status': 'SUCCESSFUL DELETE', 'email': email})
+        return jsonify({'email': email}), status.HTTP_200_OK
     else:
-        return jsonify({'status': 'FAILURE'})
+        return jsonify({'email': email}), status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 @app.route('/rest/login-instructor', methods=['POST'])

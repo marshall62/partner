@@ -364,3 +364,91 @@
 2019-09-22 12:31:02,389 DEBUG: [in /home/david/dev/python/partner/partner/__init__.py:35] MainThread ---------------------------------------------------------
 2019-09-22 12:31:11,823 DEBUG: [in /home/david/dev/python/partner/partner/__init__.py:34] MainThread Starting app
 2019-09-22 12:31:11,823 DEBUG: [in /home/david/dev/python/partner/partner/__init__.py:35] MainThread ---------------------------------------------------------
+2020-03-04 09:37:19,566 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 09:37:19,567 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:07:44,595 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:07:44,596 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:08:18,039 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:08:18,039 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:10:37,616 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread Starting app
+2020-03-04 10:10:37,617 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:59] MainThread ---------------------------------------------------------
+2020-03-04 10:11:36,680 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:11:36,681 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:11:54,932 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:11:54,932 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:19:27,927 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:19:27,927 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:20:07,050 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:20:07,051 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:21:14,411 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:21:14,412 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:23:33,421 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:23:33,421 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:25:11,921 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:25:11,922 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:27:20,801 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:27:20,802 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:29:48,713 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:29:48,714 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:35:12,962 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:35:12,962 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:36:27,965 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:36:27,965 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:39:24,002 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:39:24,002 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:40:28,636 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:40:28,637 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:43:41,159 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:43:41,159 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:44:34,848 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:44:34,848 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:49:52,456 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:49:52,457 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:50:22,454 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:50:22,454 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:54:47,393 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:54:47,394 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 10:57:11,392 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 10:57:11,393 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 11:30:16,260 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 11:30:16,261 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 11:31:14,730 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 11:31:14,731 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 11:42:10,422 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 11:42:10,422 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 11:42:37,843 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 11:42:37,843 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 11:51:51,726 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 11:51:51,726 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 11:53:23,180 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 11:53:23,180 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 11:54:34,816 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 11:54:34,817 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 11:54:40,063 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 11:54:40,064 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 11:56:30,295 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 11:56:30,296 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 12:03:31,502 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 12:03:31,502 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 12:06:07,457 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 12:06:07,457 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 12:07:35,536 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 12:07:35,537 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 12:07:45,286 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 12:07:45,286 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 12:09:56,934 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 12:09:56,934 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 12:11:08,698 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 12:11:08,698 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 12:11:50,673 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 12:11:50,673 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 12:21:00,657 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 12:21:00,657 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 12:21:51,626 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 12:21:51,627 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 12:22:42,646 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 12:22:42,646 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 12:26:34,233 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 12:26:34,233 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------
+2020-03-04 12:26:45,656 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:57] MainThread Starting app
+2020-03-04 12:26:45,656 DEBUG: [in /srv/raiddisk/dev/pairup/partner/partner/__init__.py:58] MainThread ---------------------------------------------------------

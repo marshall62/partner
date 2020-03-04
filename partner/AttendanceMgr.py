@@ -48,12 +48,19 @@ class AttendanceMgr:
                 return entry
         return None
 
+
+    # Assumption is that attendance entries have been created for the given data before calling this.
     @staticmethod
     def get_present_students (roster, date):
+        '''
+        :param roster:
+        :param date:
+        :return: list of students marked as present (if not marked, student will be marked as present)
+        '''
         present_students = []
         for s in roster.students:
             entry = AttendanceMgr.get_date_entry(s, date)
-            if AttendanceMgr.is_present(entry.value):
+            if not entry or AttendanceMgr.is_present(entry.value):
                 present_students.append(s)
         return present_students
 
@@ -86,7 +93,7 @@ class AttendanceMgr:
     def generate_attendance (students, start_date, end_date):
         dates = AttendanceMgr.get_term_dates(start_date, end_date)
         date_strings = [d.strftime('%m/%d/%Y') for d in dates]
-        out = 'Student Name, ' + ','.join(date_strings) + '\n'
+        out = 'Student Name,' + ','.join(date_strings) + '\n'
         for student in students:
             row = student.first_name + ' ' + student.last_name
             for d in dates:
