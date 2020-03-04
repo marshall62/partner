@@ -3,6 +3,8 @@ partner.db
 output.log
 /uploads/*
 /venv/*
+/partner/partner.db
 /partner/rosters/*
 /partner/__pycache__/*
 /pycache/*
+config.cfg

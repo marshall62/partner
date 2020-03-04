@@ -11,3 +11,61 @@ $sqlite3 partner.db
 > select * from student
 >.tables # lists tables
 >.schema section #shows section table definition
+
+
+Changes to models.py means database definitions likely change which means
+running migrate like:
+
+flask db migrate
+flask db upgrade
+
+This generates files in the migrations dir which then must be pushed to github
+so that other installations can get these definitions along with a db backup so
+that they can get their db in synch with it.
+
+
+Backup/Restore
+
+sqlite3 partner.db .backup > partner.backup
+
+restore:
+rm existing partner.db
+sqlite3 partner.db < partner.backup
+
+
+Set up SQLite3 db for first time with the Flask app
+---------------------------------------------------
+
+These instructions won't work if the db already exists or if I'm starting
+from a backup.
+
+make sure that config.cfg has correct path to db. e.g.
+SQLALCHEMY_DATABASE_URI='sqlite:////srv/raiddisk/dev/pairup/partner/partner/partner.db'
+
+N.B.: db needs to live in same dir as the __init__.py that is where the flask app is taken
+from
+
+source venv/bin/activate
+
+rm migrations dir
+
+in project root dir (pairup/partner)
+flask db init
+
+cd into partner/partner dir (where __init__.py is)
+flask db migrate
+flas db upgrade
+
+Set up SQLite3 with existing db from backup
+-------------------------------------------
+
+restore the backup db into partner.db (see above)
+cd partner
+open venv
+flask db migrate
+flask db upgrade
+
+
+
+
+

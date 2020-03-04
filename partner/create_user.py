@@ -4,17 +4,7 @@ from getpass import getpass
 import sys
 import bcrypt
 from partner import app, db
-from partner.models import User, Instructor
-
-def create_user (email, pw):
-    salt = bcrypt.gensalt()
-    hashed_pw = bcrypt.hashpw(pw.encode(), salt)
-    user = User(
-        email=email,
-        password=hashed_pw)
-    db.session.add(user)
-    db.session.commit()
-    return user
+from partner.models import Instructor
 
 
 def create_instructor (email, pw):
@@ -31,8 +21,8 @@ def create_users():
     """Main entry point for script."""
     with app.app_context():
         db.metadata.create_all(db.engine)
-        if User.query.all():
-            print('A user already exists! Create another? (y/n):'),
+        if Instructor.query.all():
+            print('Instructor already exists! Create another? (y/n):'),
             create = input()
             if create == 'n':
                 return
@@ -42,7 +32,7 @@ def create_users():
         password = getpass()
         assert password == getpass('Password (again):')
         create_user(email, password)
-        print('User added.')
+        print('Instructor added.')
 
 
 # if __name__ == '__main__':

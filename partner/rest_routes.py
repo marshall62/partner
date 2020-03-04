@@ -2,7 +2,7 @@ from flask import request, jsonify, Response
 
 from partner import app, util
 # from partner.roster_admin import process_roster_file_upload
-from partner.models import Section, Group, Roster, User, Instructor
+from partner.models import Section, Group, Roster, Instructor
 import partner.create_user
 from partner.AttendanceMgr import AttendanceMgr
 from partner.GroupGenerator import GroupGenerator
