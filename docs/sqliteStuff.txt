@@ -66,6 +66,49 @@ flask db migrate
 flask db upgrade
 
 
+Migrating SQLite to Postgres locally
+-------------------------------------
+
+Install postgres
+Initially only the postgres user can access the db so must do following:
+
+start a terminal
+sudo -i -u postgres
+createuser --interactive
+
+give it the username you are logged in with
+and make it a superuser
+
+By default when this user logs into the postgres it will try to find
+a db by the same name as the user.
+
+Create a db from postgres account:
+createdb partner
+
+can now connect to different db:
+
+psql -d partner
+
+To migrate from sqlite backup file:
+psql -d partner < partner_20200303.bak
+
+NOte:  I had to hand edit above file to remove pragma
+change size of varchar fields to be large enough for strings in data.
+change booleans to true/false instead of 1/0
+change datetime to timestamp
+change all id INT fields to SERIAL
+change blob to bytea but data itself won't load because its a bit not a byte.
+before each values put the list of columns (not include id)
+delete the id value from each of the values lists (postgres wants it to be implicit)
+
+
+
+
+
+
+
+
+
 
 
 
