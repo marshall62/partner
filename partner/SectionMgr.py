@@ -1,6 +1,6 @@
 from partner import db, util
 from partner.models import Section
-from partner.rosters.RosterToDb import RosterToDb
+from partner.RosterToDb import RosterToDb
 from partner.AttendanceMgr import AttendanceMgr
 
 
