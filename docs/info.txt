@@ -83,3 +83,12 @@ SQLite CLI operations
 $sqlite3 partner.db
 > select * from student
 >.tables # lists tables
+
+
+CircleCI automated testing:
+------------------------------
+automated testing happens on pushing to github via webhook to circleCI
+
+Results can be followed at:
+https://circleci.com/gh/marshall62/partner
+

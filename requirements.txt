@@ -21,7 +21,6 @@ Mako==1.0.12
 MarkupSafe==1.1.1
 more-itertools==7.0.0
 pathlib2==2.3.5
-pkg-resources==0.0.0
 pluggy==0.11.0
 psycopg2-binary==2.8.4
 py==1.8.0

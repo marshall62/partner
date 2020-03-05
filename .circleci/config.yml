@@ -1,6 +1,7 @@
 # Python CircleCI 2.0 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-python/ for more details
+# Results can be witnessed at: https://circleci.com/gh/marshall62/partner
 #
 version: 2
 jobs:
