@@ -11,6 +11,7 @@ class TestInstructorAPI:
     def setup_class(cls):
         app.config['TESTING'] = True
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'test.db')
+        # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///partner-test'
         cls.app = app.test_client()
         db.create_all()
 
@@ -35,17 +36,23 @@ class TestInstructorAPI:
         assert json_data['email'] == email
 
     def test_create_exists (self):
-        email = 'goober@email.com'
+        email = 'phred@email.com'
         pw = 'secret'
+        inst = Instructor(email=email, password=pw.encode())
+        db.session.add(inst)
+        db.session.commit()
         response = self.app.post('/rest/instructor', data={'email': email, 'password':pw})
         assert 409 == response.status_code
 
     def test_get_exists (self):
-        email = 'goober@email.com'
+        email = 'hammerhead@email.com'
+        inst = Instructor(email=email, password='secret'.encode())
+        db.session.add(inst)
+        db.session.commit()
         response = self.app.get('/rest/instructor?email='+email)
         assert 200 == response.status_code
         json_data = response.get_json()
-        assert json_data['id'] ==  1
+        assert json_data['id'] >= 1
         assert not json_data['authenticated']
         assert json_data['email'] == email
 
@@ -54,12 +61,15 @@ class TestInstructorAPI:
         assert 404 == response.status_code
 
     def test_delete_exist (self):
-        email = 'goober@email.com'
+        email = 'blee@email.com'
+        inst = Instructor(email=email, password='secret'.encode())
+        db.session.add(inst)
+        db.session.commit()
         response = self.app.delete('/rest/instructor', data={'email': email})
         assert 200 == response.status_code
 
     def test_get__not_exists (self):
-        email = 'goober@email.com'
+        email = 'NotThere@email.com'
         response = self.app.get('/rest/instructor?email='+email)
         assert 404 == response.status_code
 

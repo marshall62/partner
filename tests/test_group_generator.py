@@ -1,7 +1,7 @@
 from partner.models import Group,Student, Roster, Section
 from partner.GroupGenerator import GroupGenerator
 import os
-import util
+from partner import util
 from partner import app, db, basedir
 
 class TestGroupGenerator():
