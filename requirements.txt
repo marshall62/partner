@@ -7,6 +7,7 @@ cffi==1.13.2
 chardet==3.0.4
 Click==7.0
 Flask==1.1.1
+Flask-API==2.0
 Flask-Cors==3.0.8
 Flask-Login==0.4.1
 Flask-Migrate==2.5.2
@@ -20,6 +21,7 @@ Mako==1.0.12
 MarkupSafe==1.1.1
 more-itertools==7.0.0
 pathlib2==2.3.5
+pkg-resources==0.0.0
 pluggy==0.11.0
 psycopg2-binary==2.8.4
 py==1.8.0
