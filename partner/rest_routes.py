@@ -99,14 +99,6 @@ def logout_user():
     return jsonify()
 
 
-from functools import wraps
-from flask import (
-    current_app,
-    jsonify,
-    request,
-)
-
-
 # REST API endpoint to save a roster (student name changes + attendance) JSON.
 # body must contain secId, list of students, [date mm/dd/yyyy]
 @app.route('/rest/rosters', methods=['POST'])

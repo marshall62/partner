@@ -19,7 +19,7 @@ app = Flask('partner')
 # Correct configuration is per setting of FLASK_ENV environment variable.  CHoices: Production, Development, Testing
 # Will use a class in the partner.config.py module
 config_class_name = app.config['ENV'].capitalize() + "Config"
-app.config.from_object('config.'+ config_class_name)
+app.config.from_object('partner.config.'+ config_class_name)
 now = datetime.datetime.now()
 # figure out the term and year based on current date but can override with environment vars if wanting something specific.
 app.config['TERM'] = os.environ.get('TERM') or ('spring' if now.month < 6 else 'fall')
