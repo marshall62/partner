@@ -6,6 +6,7 @@ import logging.handlers
 from flask.logging import default_handler
 from flask_login import LoginManager
 from flask_cors import CORS
+import datetime
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -14,24 +15,25 @@ projdir = basedir[:slashloc]
 print("importing partner package")
 # per Flask doc, we hardcode the application package rather than use __name__
 app = Flask('partner')
-app.config.from_pyfile(os.path.join(projdir, 'config.cfg'))
-dburl = os.environ.get('DATABASE_URL')
-# prefer the environment db url so I can use other dbs in production
-if dburl:
-    app.config['SQLALCHEMY_DATABASE_URI'] = dburl
+
+# Correct configuration is per setting of FLASK_ENV environment variable.  CHoices: Production, Development, Testing
+# Will use a class in the partner.config.py module
+config_class_name = app.config['ENV'].capitalize() + "Config"
+app.config.from_object('config.'+ config_class_name)
+now = datetime.datetime.now()
+# figure out the term and year based on current date but can override with environment vars if wanting something specific.
+app.config['TERM'] = os.environ.get('TERM') or ('spring' if now.month < 6 else 'fall')
+app.config['YEAR'] = os.environ.get('YEAR') or str(now.year)
+
+
 # N.B. It may be important to limit the CORS origins so that the fetch API calls can
 # pass credentials through cookies (which requires an origin be specified and not be *)
 CORS(app, resources={r"/rest/*": 
-                        {"origins": ["http://localhost:3000", "http://localhost:8080",
-                                "http://localhost:3001", 
-                                "https://pairup-dm.herokuapp.com",
-                                "http://pairup-dm.herokuapp.com"],   
+                        {"origins": app.config['CORS_WHITELIST'],
                         "supports_credentials": True
                         },
                     r"/api/*":
-                        {"origins": ["http://localhost:3000","http://localhost:8080",
-                        "http://basic-dm.herokuapp.com", "https://basic-dm.herokuapp.com"
-                        "http://pairup-dm.herokuapp.com", "https://pairup-dm.herokuapp.com"],
+                        {"origins": app.config['CORS_WHITELIST'],
                         "supports_credentials": True}
                         });
 login_manager = LoginManager(app)

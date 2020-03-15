@@ -28,18 +28,19 @@ class AttendanceMgr:
 
     @staticmethod
     def update_attendance(roster, date, statuses):
-        for i, s in enumerate(roster.sorted_students()):
-            status = statuses[i]
-            s.status = status
-            found = False
-            for entry in s.attendance:
-                if entry.date == date:
-                    entry.value = status
-                    found = True
-                    break
-            if not found:
-                entry = models.AttendanceEntry(date=date, value=s.status)
-                s.attendance.append(entry)
+        if len(statuses) == len(roster.sorted_students()):
+            for i, s in enumerate(roster.sorted_students()):
+                status = statuses[i]
+                s.status = status
+                found = False
+                for entry in s.attendance:
+                    if entry.date == date:
+                        entry.value = status
+                        found = True
+                        break
+                if not found:
+                    entry = models.AttendanceEntry(date=date, value=s.status)
+                    s.attendance.append(entry)
 
     @staticmethod
     def get_date_entry (student, date):

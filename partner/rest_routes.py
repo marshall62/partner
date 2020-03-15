@@ -1,4 +1,5 @@
-from flask import request, jsonify, Response
+from flask import request, jsonify, Response, abort
+from werkzeug.exceptions import BadRequest
 
 from partner import app, util
 # from partner.roster_admin import process_roster_file_upload
@@ -73,7 +74,7 @@ def delete_instructor ():
 def login_user():
     email = request.form.get('email')
     password = request.form.get('password').encode()
-    user = Instructor.query.filter_by(email=email).first()
+    user = Instructor.query.filter_by(email=email).first_or_404()
 
     if user:
         if bcrypt.checkpw(password, user.password):
@@ -97,21 +98,34 @@ def logout_user():
     flask_login.logout_user()
     return jsonify()
 
+
+from functools import wraps
+from flask import (
+    current_app,
+    jsonify,
+    request,
+)
+
+
 # REST API endpoint to save a roster (student name changes + attendance) JSON.
 # body must contain secId, list of students, [date mm/dd/yyyy]
 @app.route('/rest/rosters', methods=['POST'])
 @login_required
 def rosters_post ():
     json = request.get_json()
+    if not json:
+        return abort(400)
     sec_id = json.get('secId')
     dt = json.get('date')
+    if not dt or not sec_id:
+        return abort(400)
     sec = Section.query.filter_by(id=sec_id).first_or_404()
     r = sec.roster
     if dt:
         date = util.mdy_to_date(dt)
     else:
         date = util.today()
-    students = json.get('students') # list is sorted
+    students = json.get('students', []) # caller is sending a sorted list
     status_codes = [ s['status'] for s in students ]
     name_edits = [ True if s.get('edited') else False for s in students ]
     if True in name_edits:

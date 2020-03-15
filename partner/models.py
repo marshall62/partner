@@ -101,9 +101,12 @@ class Student(db.Model):
     def __lt__ (self, other):
         return self.last_name < other.last_name
 
+
     @property
     def pic_url (self):
-        url = "https://www.smith.edu/load.php?pic=" + self.onecard_id
+        url = ''
+        if self.onecard_id:
+            url = "https://www.smith.edu/load.php?pic=" + self.onecard_id
         return url
 
     @property

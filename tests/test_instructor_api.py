@@ -3,20 +3,19 @@ from partner import app, db, basedir
 import datetime
 import json
 from partner.models import Instructor
+from partner import create_user
 
 class TestInstructorAPI:
-
+    # Make sure FLASK_ENV environement variable is set to testing for these tests to work
     # called once at beginning of suite to create an empty db.
     @classmethod
     def setup_class(cls):
-        app.config['TESTING'] = True
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'test.db')
-        # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///partner-test'
         cls.app = app.test_client()
         db.create_all()
 
     def setup (self):
         pass
+
 
     def teardown_class (cls):
         db.drop_all()
@@ -71,6 +70,20 @@ class TestInstructorAPI:
     def test_get__not_exists (self):
         email = 'NotThere@email.com'
         response = self.app.get('/rest/instructor?email='+email)
+        assert 404 == response.status_code
+
+
+    def test_login_succeed (self):
+        email = 'login-tester@email.com'
+        pw = 'secret'
+        create_user.create_instructor(email,pw)
+        response = self.app.post('/rest/login-instructor', data={'email': email, 'password':pw})
+        assert 200 == response.status_code
+
+    def test_login_fail (self):
+        email = 'nothere@email.com'
+        pw = 'secret'
+        response = self.app.post('/rest/login-instructor', data={'email': email, 'password':pw})
         assert 404 == response.status_code
 
 

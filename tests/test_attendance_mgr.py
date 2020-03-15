@@ -6,11 +6,10 @@ from partner.models import Roster, Section, Student, AttendanceEntry
 
 class TestAttendanceMgr:
 
+    # Make sure FLASK_ENV environement variable is set to testing for these tests to work
     # called once at beginning of suite to create an empty db.
     @classmethod
     def setup_class(cls):
-        app.config['TESTING'] = True
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'test.db')
         cls.app = app.test_client()
         db.create_all()
 
