@@ -16,8 +16,8 @@ class ProductionConfig(Config):
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    # CUrrently there is no Production deploy so I want my db to be postgres
-    # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'test.db')
+    # use sqlite until I figure out how to fully deal with postgres when in a term window and need to make python calls to query it
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'partner.db')
 
 
 class TestingConfig(Config):
