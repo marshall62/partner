@@ -29,19 +29,22 @@ class TestSectionsAPI:
 
     def test_get_none_in_system (self):
         response = self.app.get('/rest/sections')
-        today = util.today()
         assert 200 == response.status_code
         json_data = response.get_json()
         print(json_data)
 
     def test_default_all_system (self):
-        sec = Section(year=2020,term='spring',number=1, start_date=util.today())
-        sec2 = Section(year=2020,term='spring',number=2, start_date=util.today())
+        today = util.today()
+        y = today.year
+        term = util.get_term(today)
+        sec = Section(year=y,term=term,number=1, start_date=util.today())
+        sec2 = Section(year=y,term=term,number=2, start_date=util.today())
+        sec3 = Section(year=2019,term=term,number=3, start_date=util.today())
         partner.db.session.add(sec)
         partner.db.session.add(sec2)
+        partner.db.session.add(sec3)
         partner.db.session.commit()
         response = self.app.get('/rest/sections')
-        today = util.today()
         assert 200 == response.status_code
         json_data = response.get_json()
         assert 2 == len(json_data)
@@ -63,6 +66,7 @@ class TestSectionsAPI:
         partner.db.session.add(sec2)
         partner.db.session.commit()
         id = sec.id
+        # lookup by id does not use default term or year
         response = self.app.get(f'/rest/sections?id={id}')
         assert 200 == response.status_code
         json_data = response.get_json()
@@ -74,15 +78,20 @@ class TestSectionsAPI:
         assert s1['start_date'] == util.date_to_mdy(sec.start_date)
 
     def test_get_by_year (self):
-        sec = Section(year=2020,term='spring',number=1, start_date=util.today())
+        today = util.today()
+        y = today.year
+        term = util.get_term(today)
+        sec = Section(year=y,term=term,number=1, start_date=today)
         sec2 = Section(year=2019,term='fall',number=2, start_date=util.today())
         partner.db.session.add(sec)
         partner.db.session.add(sec2)
         partner.db.session.commit()
         yr = sec.year
+        # today's month will be used to figure out a term for default in lookup
         response = self.app.get(f'/rest/sections?year{yr}')
         assert 200 == response.status_code
         json_data = response.get_json()
+        # its no longer 2019 so we should only get back one section for today's year
         assert 1 == len(json_data)
         s1 = json_data[0]
         assert s1['number'] == sec.number
@@ -91,7 +100,9 @@ class TestSectionsAPI:
         assert s1['start_date'] == util.date_to_mdy(sec.start_date)
 
     def test_get_by_term (self):
-        sec = Section(year=2020,term='spring',number=1, start_date=util.today())
+        today = util.today()
+        y = today.year
+        sec = Section(year=y,term='spring',number=1, start_date=today)
         sec2 = Section(year=2019,term='fall',number=2, start_date=util.today())
         partner.db.session.add(sec)
         partner.db.session.add(sec2)
