@@ -148,7 +148,7 @@ class AttendanceEntry(db.Model):
 
 class Instructor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String)
+    email = db.Column(db.String(64), index=True)
     password = db.Column(db.LargeBinary)
     authenticated = db.Column(db.Boolean, default=False)
 
