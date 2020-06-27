@@ -6,6 +6,7 @@ class Config(object):
     SECRET_KEY='temporary_key'
     LOG_FILE='output.log'
     UPLOAD_FOLDER = os.path.join(projdir, 'partner', 'uploads')
+    # Amazon RDS db URL should be added here (see docs/secret_stuff.txt)
     SQLALCHEMY_DATABASE_URI = 'postgresql:///partner'
     SQLALCHEMY_TRACK_MODIFICATIONS = True # added to suppress warning - not sure what it does
     CORS_WHITELIST = ["http://localhost:3000"]
@@ -22,7 +23,7 @@ class DevelopmentConfig(Config):
     # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'partner.db')
     # Database on AWS RDS
     #  TODO Shouldn't this AWS db in ProductionConfig only?  I don't think I'm set up to run a partner db in MySQL locally.
-    # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://admin:jupiter62@flask-aws-tutorial-db.cmnye3vldx70.us-east-2.rds.amazonaws.com/pairup'
+
     SQLALCHEMY_DATABASE_URI = 'postgresql:///partner'
 
 
