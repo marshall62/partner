@@ -31,7 +31,7 @@ def create_users():
         email = input()
         password = getpass()
         assert password == getpass('Password (again):')
-        create_user(email, password)
+        create_instructor(email, password)
         print('Instructor added.')
 
 
