@@ -1,0 +1,31 @@
+Followed tutorial here: https://medium.com/@rodkey/deploying-a-flask-application-on-aws-a72daba6bb80
+
+1.  Created RDS database instance following the tutorial above
+
+Created an RDS database on AWS according to the instructions above.  Some things were a little different in the UI
+notably it did not create a database within MySQL.
+
+After setting up the db in AWS dashboard I got into my local machines pip env and run mysql with the AWS db connection string
+obtained from the dashboard:
+
+mysql -h flask-aws-tutorial-db.cmnye3vldx70.us-east-2.rds.amazonaws.com -u admin -p
+
+I then do:
+create database pairup;
+
+user: admin
+pw: jupiter62
+
+I then set the config.py
+SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://admin:jupiter62@flask-aws-tutorial-db.cmnye3vldx70.us-east-2.rds.amazonaws.com/pairup'
+
+
+now I need to migrate my database definitions to RDS with
+
+flask db stamp_head  // avoids an error about the database not being updated
+flask db migrate
+flask db update
+
+======================================================================================
+
+2.  

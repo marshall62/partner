@@ -1,0 +1,39 @@
+Make sure the configuration being used has the correct db URI
+ SQLALCHEMY_DATABASE_URI = 'postgresql:///partner'
+
+ I must have only setup postgres on my laptop because the db here is empty.
+
+ Uninstalled version 9.5 and installed newest postgres on 6/26/20  but it still looks to be 9.5 even though I'm told version 12 is available
+
+ Instructions used: https://gorails.com/guides/upgrading-postgresql-version-on-ubuntu-server
+
+ The extra part of installation is:
+
+sudo su - postgres
+psql
+postgres-# CREATE ROLE your_username WITH LOGIN CREATEDB ENCRYPTED PASSWORD 'your_password';
+
+su - your_username
+createdb partner
+
+cd into partner
+psql -d partner < partner_20200303.bak
+
+Now I need to build an instructor login:
+
+Hit the URL as a POST request from postman
+
+localhost:5000/rest/instructor?email=marshall62@gmail.com&password=MyPassword
+
+OR
+Use Intellij Tools | Python Console
+>>> import partner.create_user
+>>> partner.create_user.create_users()
+
+
+Note:  As part of this 6/26/20 upgrade to postgres I did not run a flask db migrate or upgrade.   That may need to be done
+
+Now start the UI and login
+(cd ../ui)
+npm start&
+localhost:3000

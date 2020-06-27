@@ -1,0 +1,17 @@
+The project has worked with SQLite and Postgres.
+I began hooking it up to MySQL probably because of an AWS tutorial.
+
+config.py has different Config classes for different environments and will use different dbs based on the setting of
+SQLALCHEMY_DATABASE_URI
+
+For pytest testing, it uses an empty SQLite db.
+
+For production it should probably use the AWS path to Mysql and
+for dev it should use either a local MySQL or a local postgres (SQLite ok for local but I've discovered that
+things don't convert perfectly from SQLite to postgres when moving to Heroku)
+
+See postgres_notes.txt which creates a new postgres db and imports SQLite data into it
+and requires that I build an instructor login (a row in the instructor table).
+
+
+
