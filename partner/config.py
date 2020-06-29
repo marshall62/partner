@@ -10,15 +10,23 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = 'postgresql:///partner'
     SQLALCHEMY_TRACK_MODIFICATIONS = True # added to suppress warning - not sure what it does
     CORS_WHITELIST = ["http://localhost:3000"]
+    NAME="Config"
     # TERM='spring'  # term and year are set in __init__.py based on env vars or current date
     # YEAR='2020'
 
 class ProductionConfig(Config):
     CORS_WHITELIST = ["http://basic-dm.herokuapp.com", "https://basic-dm.herokuapp.com",
                       "http://pairup-dm.herokuapp.com", "https://pairup-dm.herokuapp.com"]
+    SECRET_KEY='a_secret_production_key'
+    SQLALCHEMY_DATABASE_URI = 'postgresql:///partner'
+    NAME="Production"
+    DEBUG = True
+    DEVELOPMENT = True
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    DEVELOPMENT = True
+    NAME="Development"
     # use sqlite until I figure out how to fully deal with postgres when in a term window and need to make python calls to query it
     # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'partner.db')
     # Database on AWS RDS
@@ -33,3 +41,4 @@ class TestingConfig(Config):
     LOGIN_DISABLED = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
     CORS_WHITELIST = []
+    NAME="Testing"

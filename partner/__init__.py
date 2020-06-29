@@ -18,8 +18,13 @@ app = Flask('partner')
 
 # Correct configuration is per setting of FLASK_ENV environment variable.  CHoices: Production, Development, Testing
 # Will use a class in the partner.config.py module
-config_class_name = app.config['ENV'].capitalize() + "Config"
-app.config.from_object('partner.config.'+ config_class_name)
+
+
+# MUST SET APP_SETTINGS environment var to one of config.ProductionConfig or config.DevelopmentConfig (see config.py)
+# on the dev environment this is set in .env
+# on heroku this is set by CLI: heroku config:set APP_SETTINGS=config.ProductionConfig
+app.config.from_object(os.environ['APP_SETTINGS'])
+print("Using config class" + os.environ['APP_SETTINGS'] + " config name: " + app.config['NAME'])
 now = datetime.datetime.now()
 # figure out the term and year based on current date but can override with environment vars if wanting something specific.
 app.config['TERM'] = os.environ.get('TERM') or ('spring' if now.month < 6 else 'fall')
