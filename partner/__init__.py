@@ -6,7 +6,7 @@ import logging.handlers
 from flask.logging import default_handler
 from flask_login import LoginManager
 from flask_cors import CORS
-import config
+import partner.config
 import datetime
 
 
