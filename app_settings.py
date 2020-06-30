@@ -21,7 +21,7 @@ class ProductionConfig(Config):
     CORS_WHITELIST = ["http://basic-dm.herokuapp.com", "https://basic-dm.herokuapp.com",
                       "http://pairup-dm.herokuapp.com", "https://pairup-dm.herokuapp.com"]
     SECRET_KEY='a_secret_production_key'
-    SQLALCHEMY_DATABASE_URI = 'postgresql:///partner'
+    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     NAME="Production"
     DEBUG = True
     DEVELOPMENT = True
