@@ -7,7 +7,7 @@ from flask.logging import default_handler
 from flask_login import LoginManager
 from flask_cors import CORS
 import datetime
-from partner.config import *
+
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -25,7 +25,7 @@ app = Flask('partner')
 # on the dev environment this is set in .env
 # on heroku this is set by CLI: heroku config:set APP_SETTINGS=config.ProductionConfig
 config_class = os.environ['APP_SETTINGS']
-print("Using config class" + os.environ['APP_SETTINGS'])
+print("Using config class " + os.environ['APP_SETTINGS'])
 app.config.from_object(config_class)
 print("Config name: " + app.config['NAME'] + " read")
 now = datetime.datetime.now()
