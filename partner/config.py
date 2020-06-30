@@ -1,5 +1,8 @@
-from partner import projdir,basedir
 import os
+basedir = os.path.abspath(os.path.dirname(__file__))
+slashloc = basedir.rindex('/')
+projdir = basedir[:slashloc]
+
 class Config(object):
     DEBUG = False
     TESTING = False
