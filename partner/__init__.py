@@ -7,6 +7,7 @@ from flask.logging import default_handler
 from flask_login import LoginManager
 from flask_cors import CORS
 import datetime
+from partner.config import *
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
