@@ -21,10 +21,10 @@ app = Flask('partner')
 # Will use a class in the partner.config.py module
 
 
-# MUST SET APP_SETTINGS environment var to one of config.ProductionConfig or config.DevelopmentConfig (see config.py)
+# MUST SET APP_SETTINGS environment var to one of app_settings.ProductionConfig, app_settings.DevelopmentConfig (see ../app_settings.py)
 # on the dev environment this is set in .env
-# on heroku this is set by CLI: heroku config:set APP_SETTINGS=config.ProductionConfig
-# for testing (CircleCI) it should be export APP_SETTINGS=config.TestingConfig
+# on heroku this is set by CLI: heroku config:set APP_SETTINGS=app_settings.ProductionConfig
+# for testing (CircleCI) it should be export APP_SETTINGS=app_settings.TestingConfig
 config_class = os.environ['APP_SETTINGS']
 print("Using config class " + os.environ['APP_SETTINGS'])
 app.config.from_object(config_class)

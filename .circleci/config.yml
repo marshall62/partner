@@ -9,7 +9,7 @@ jobs:
     docker:
     # specify the version you desire here
     # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-    - image: circleci/python:3.6.1
+    - image: circleci/python:3.8.5
 
     # Specify service dependencies here if necessary
     # CircleCI maintains a library of pre-built images
@@ -38,8 +38,11 @@ jobs:
         name: run tests
         command: |
           . venv/bin/activate
-          export FLASK_ENV=testing
-          export APP_SETTINGS=config.TestingConfig
+#          export FLASK_ENV=testing
+#  DATABASE_URL is checked by ProductionConfig so set to empty value so it doesn't fail.
+          exort DATABASE_URL=
+#          This config will use SQLite database.
+          export APP_SETTINGS=app_settings.TestingConfig
           python -m pytest tests
 
     - store_artifacts:
