@@ -38,7 +38,7 @@ jobs:
         name: run tests
         command: |
           . venv/bin/activate
-          exort DATABASE_URL=
+          export DATABASE_URL=
           export APP_SETTINGS=app_settings.TestingConfig
           python -m pytest tests
 
