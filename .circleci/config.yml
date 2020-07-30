@@ -38,10 +38,7 @@ jobs:
         name: run tests
         command: |
           . venv/bin/activate
-#          export FLASK_ENV=testing
-#  DATABASE_URL is checked by ProductionConfig so set to empty value so it doesn't fail.
           exort DATABASE_URL=
-#          This config will use SQLite database.
           export APP_SETTINGS=app_settings.TestingConfig
           python -m pytest tests
 
