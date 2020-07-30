@@ -14,7 +14,12 @@ git add files
 git commit -m "comment"
 git push heroku master
 
+To login to heroku (first, before below)
+https://id.heroku.com/login
 
+Have 2 apps that relate to this
+flask_pairup
+pairup_dm
 
 Issues/TODOs:
 
@@ -30,8 +35,16 @@ POST https://flask-pairup.herokuapp.com/rest/create-instructor
 
 GET https://flask-pairup.herokuapp.com/rest/check-instructor?email=goober
 
+Note this will work for marshall62@gmail.com
+
 DELETE https://flask-pairup.herokuapp.com/delete-instructor
   email: goober
+
+
+Need to make sure the environment variable FLASK_ENV is set to production
+
+The config of the app is handled in partner/__init__.py and will come from the object config.ProductionConfig
+
 
 Files that are currently somewhat dependent on environment:
 partner/__init__.py:  Sets up CORS hosts that the backend is willing to accept requests from (e.g. heroku and localhost) 
