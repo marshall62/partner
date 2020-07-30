@@ -39,7 +39,7 @@ jobs:
         command: |
           . venv/bin/activate
           export FLASK_ENV=testing
-          export APP_SETTINGS=config.TestConfig
+          export APP_SETTINGS=config.TestingConfig
           python -m pytest tests
 
     - store_artifacts:
