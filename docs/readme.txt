@@ -1,7 +1,16 @@
+To run production version (heroku):
+http://pairup-dm.herokuapp.com/
+https://pairup-dm.herokuapp.com/
+
 How to run app from command line:
 source venv/bin/activate
 flask run
 (maybe export FLASK_APP=partner)
+
+Create an instructor login by POSTING:
+/rest/login-instructor
+email:marshall62@gmail.com
+password:whatever
 
 Getting rosters from Banner:
 

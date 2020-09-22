@@ -177,5 +177,6 @@ def user_loader(user_id):
     :param unicode user_id: user_id (email) user to retrieve
 
     """
+    print("Loading user with id {user_id}")
     u = Instructor.query.get(user_id)
     return u

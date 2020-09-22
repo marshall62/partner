@@ -19,7 +19,7 @@ class Config(object):
 
 class ProductionConfig(Config):
     CORS_WHITELIST = ["http://basic-dm.herokuapp.com", "https://basic-dm.herokuapp.com",
-                      "http://pairup-dm.herokuapp.com", "https://pairup-dm.herokuapp.com"]
+                      "http://pairup-dm.herokuapp.com", "https://pairup-dm.herokuapp.com", "http://localhost:3000"]
     SECRET_KEY='a_secret_production_key'
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     NAME="Production"
@@ -35,7 +35,9 @@ class DevelopmentConfig(Config):
     # Database on AWS RDS
     #  TODO Shouldn't this AWS db in ProductionConfig only?  I don't think I'm set up to run a partner db in MySQL locally.
 
-    SQLALCHEMY_DATABASE_URI = 'postgresql:///partner'
+    # SQLALCHEMY_DATABASE_URI = 'postgresql:///partner'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+                              'sqlite:///' + os.path.join(basedir, 'partner.db')
 
 
 

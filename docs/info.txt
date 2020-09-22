@@ -1,17 +1,10 @@
 --Linux instructions for Project set up
 
-Make sure your python has pip included:
-    sudo apt update
-    sudo apt install python3-pip
-    pip3 --version
-Install python-venv
-    sudo apt-get update
-    sudo apt-get python3-venv
 Make the virtual environment for the project
     python3 -m venv venv
 Add dependencies (from requirements.txt) to the venv
     . venv/bin/activate
-    Do which python and verify that it is version 3+ and is coming from within venv
+    Do ''which python'' and verify that it is version 3+ and is coming from within venv
     pip install -r requirements.txt
     deactivate
 Use PyCharm Community Edition to set up project:
@@ -21,30 +14,40 @@ Use PyCharm Community Edition to set up project:
         script: venv/bin/flask
         parameters: run
         working dir: project root
+        environment vars:
+          APP_SETTINGS=app_settings.DevelopmentConfig
+          DATABASE_URL=  // empty, necessary because this env var must exist in production
 
 Run | flask  should correctly launch the webapp running on port 5000
 Test in browser: http://localhost:5000/hello
 
-Edit config.cfg and make sure paths to files will work on this machine.
+The app is configured depending on the APP_SETTINGS env var which refers to a class in the app_settings.py module.
 
+Need to install SQLite (which the TestingConfig relies on) and optionally postgres which is what the deployment
+to heroku will depend on.
+
+See sqliteStuff.txt and postgres_notes.txt
+
+-----
+
+Need to have a postgres db with data in it.  See postgres_notes.txt
+
+For working at the command line the env var is necessary.
 FLASK_APP=partner.py
+Make sure DATABASE_URL is not set in the environment!
 
 Do the db migrate stuff below
+flask db init
+flask db migrate
+flask db upgrade
 
-Create the user/pw for administrating the system
- cd root dir of the flask project is (e.g. backend)
-
+Create the user/pw for administrating the system using:
+In virtual env:
+export APP_SETTINGS=app_settings.DevelopmentConfig
 python
-import partner.create_user
-partner.create_user.main()
+from partner import create_user
+create_user.create_instructor("my_email@foo.com", "passw0rd")
 
-give email and pw
-
-In root of project:
-
-flask run
-
-In browser http://localhost:5000/hello
 
 ------------------
 SQLLite associated stuff.

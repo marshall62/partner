@@ -1,4 +1,31 @@
+Install sqlite:
+ sudo apt install sqlite3
+
+To create the partner.db from Python classes (first time when sqlite is newly installed):
+rm -rd migrations  # first time install
+Make sure that the env var DATABASE_URL is not set!
+
+Make sure that app_settings.DevelopmentConfig has commented out postgres line so that it will use sqlite3
+# SQLALCHEMY_DATABASE_URI = 'postgresql:///partner'
+SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+                              'sqlite:///' + os.path.join(basedir, 'partner.db')
+
+flask db init # generates a db migration
+flask db migrate
+flask db upgrade
+# partner.db is now created from the models.py
+# If there is not an instructor user/pw create it (see info.txt on how)
+
+# Test the db to see that it has the instructor:
+
 enter python within venv
+from partner.models import Instructor
+for i in Instructor.query.all():
+    print(i.email, i.password)
+
+
+# Other Db operations:
+
 from partner.models import Student
 s = Student(first_name='dave', last_name='M')
 partner.db.session.add(s)
@@ -40,7 +67,7 @@ These instructions won't work if the db already exists or if I'm starting
 from a backup.
 
 make sure that config.cfg has correct path to db. e.g.
-SQLALCHEMY_DATABASE_URI='sqlite:////srv/raiddisk/dev/pairup/partner/partner/partner.db'
+SQLALCHEMY_DATABASE_URI='sqlite:////srv/raiddisk/dev/pairup/partner/partner.db'
 
 N.B.: db needs to live in same dir as the __init__.py that is where the flask app is taken
 from
@@ -66,40 +93,6 @@ flask db migrate
 flask db upgrade
 
 
-Migrating SQLite to Postgres locally
--------------------------------------
-
-Install postgres
-Initially only the postgres user can access the db so must do following:
-
-start a terminal
-sudo -i -u postgres
-createuser --interactive
-
-give it the username you are logged in with
-and make it a superuser
-
-By default when this user logs into the postgres it will try to find
-a db by the same name as the user.
-
-Create a db from postgres account:
-createdb partner
-
-can now connect to different db:
-
-psql -d partner
-
-To migrate from sqlite backup file:
-psql -d partner < partner_20200303.bak
-
-NOte:  I had to hand edit above file to remove pragma
-change size of varchar fields to be large enough for strings in data.
-change booleans to true/false instead of 1/0
-change datetime to timestamp
-change all id INT fields to SERIAL
-change blob to bytea but data itself won't load because its a bit not a byte.
-before each values put the list of columns (not include id)
-delete the id value from each of the values lists (postgres wants it to be implicit)
 
 
 
