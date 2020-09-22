@@ -1,4 +1,6 @@
 Release Notes necessary to put a new ui or backend on heroku:
+Releasing to heroku is done by commit/push to its git repo.  https://git.heroku.com/flask-pairup.git
+
 
 Flask Backend:
 
