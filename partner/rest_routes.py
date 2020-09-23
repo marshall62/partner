@@ -83,7 +83,7 @@ def login_user():
             db.session.commit()
             flask_login.login_user(user, remember=True)
             u = current_user
-            print("User is logged in " + u.to_dict())
+            print("User is logged in " + str(u))
             return jsonify(u.to_dict())
     return jsonify(message= "Incorrect email/password combination"), status.HTTP_401_UNAUTHORIZED
 
