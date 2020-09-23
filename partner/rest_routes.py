@@ -83,8 +83,9 @@ def login_user():
             db.session.commit()
             flask_login.login_user(user, remember=True)
             u = current_user
-            return jsonify({})
-    return jsonify(message= "Incorrect email/password combination")
+            print("User is logged in " + u.to_dict())
+            return jsonify(u.to_dict())
+    return jsonify(message= "Incorrect email/password combination"), status.HTTP_401_UNAUTHORIZED
 
 
 @login_required
@@ -96,7 +97,7 @@ def logout_user():
     db.session.add(user)
     db.session.commit()
     flask_login.logout_user()
-    return jsonify()
+    return jsonify(user.to_dict)
 
 
 # REST API endpoint to save a roster (student name changes + attendance) JSON.

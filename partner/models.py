@@ -167,6 +167,9 @@ class Instructor(db.Model):
     def is_anonymous(self):
         return False
 
+    def __repr__ (self):
+        return f"{self.id} {self.email} authenticated:{self.authenticated}"
+
     def to_dict (self):
         return { 'id': self.id, 'email': self.email, 'authenticated': self.authenticated}
 
@@ -177,6 +180,7 @@ def user_loader(user_id):
     :param unicode user_id: user_id (email) user to retrieve
 
     """
-    print("Loading user with id {user_id}")
+    print(f"Loading user with id {user_id}")
     u = Instructor.query.get(user_id)
+    print("User found", u)
     return u
