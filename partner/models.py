@@ -1,5 +1,6 @@
 from datetime import datetime
 from partner import db
+from partner import app
 from partner import util
 from partner import login_manager
 
@@ -180,7 +181,7 @@ def user_loader(user_id):
     :param unicode user_id: user_id (email) user to retrieve
 
     """
-    print(f"Loading user with id {user_id}")
+    app.logger.debug(f"Loading user with id {user_id}")
     u = Instructor.query.get(user_id)
-    print("User found", u)
+    app.logger.debug(f"User found {u}")
     return u

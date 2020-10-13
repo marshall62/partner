@@ -37,6 +37,7 @@ def create_instructor ():
     email = request.form.get('email')
     password = request.form.get('password')
     print("looking up instructor {}".format(email))
+    app.logger.debug(f"lookup up {email}")
     instructor = Instructor.query.filter_by(email=email).first()
     if instructor:
         return jsonify({'status': 'FAILURE ALREADY EXISTS'}), status.HTTP_409_CONFLICT
@@ -48,6 +49,7 @@ def create_instructor ():
 @app.route('/rest/instructor', methods=['GET'])
 def check_instructor ():
     email = request.args.get('email')
+    app.logger.debug(f"lookup up {email}")
     instructor = Instructor.query.filter_by(email=email).first()
     if instructor:
         return jsonify(instructor.to_dict()), status.HTTP_200_OK
@@ -97,7 +99,7 @@ def logout_user():
     db.session.add(user)
     db.session.commit()
     flask_login.logout_user()
-    return jsonify(user.to_dict)
+    return jsonify({})
 
 
 # REST API endpoint to save a roster (student name changes + attendance) JSON.
@@ -205,6 +207,9 @@ def get_groups ():
 @app.route('/rest/sections', methods=['GET'])
 @login_required
 def sections():
+    app.logger.debug("Inside sections")
+    headers = request.headers
+    print(headers)
     sec_id = request.args.get('id')
     year = request.args.get('year')
     term = request.args.get('term')

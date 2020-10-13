@@ -20,8 +20,8 @@ class Config(object):
 class ProductionConfig(Config):
     CORS_WHITELIST = ["http://basic-dm.herokuapp.com", "https://basic-dm.herokuapp.com",
                       "http://pairup-dm.herokuapp.com", "https://pairup-dm.herokuapp.com", "http://localhost:3000"]
-    SECRET_KEY='a_secret_production_key'
-    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    SECRET_KEY = os.environ.get('FLASK_SECRET_KEY') or Config.SECRET_KEY
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     NAME="Production"
     DEBUG = True
     DEVELOPMENT = True
