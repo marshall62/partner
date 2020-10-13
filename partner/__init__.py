@@ -31,7 +31,7 @@ app.config.from_object(config_class)
 print("Config name: " + app.config['NAME'] + " read")
 now = datetime.datetime.now()
 # figure out the term and year based on current date but can override with environment vars if wanting something specific.
-app.config['TERM'] = os.environ.get('TERM') or ('spring' if now.month < 6 else 'fall')
+app.config['TERM'] = os.environ.get('PAIRUP_TERM') or ('spring' if now.month < 6 else 'fall')
 app.config['YEAR'] = os.environ.get('YEAR') or str(now.year)
 
 
@@ -68,7 +68,7 @@ app.logger.addHandler(fh)
 app.logger.debug("Starting app")
 app.logger.debug("---------------------------------------------------------")
 from partner import routes, rest_routes, models
-
+import grading.routes
 
 #  the below is here so I can go to venv shell and do
 # flask shell and have all the db objects in the python environment
