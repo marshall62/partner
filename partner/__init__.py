@@ -33,7 +33,7 @@ now = datetime.datetime.now()
 # figure out the term and year based on current date but can override with environment vars if wanting something specific.
 app.config['TERM'] = os.environ.get('PAIRUP_TERM') or ('spring' if now.month < 6 else 'fall')
 app.config['YEAR'] = os.environ.get('YEAR') or str(now.year)
-
+app.config['SESSION_COOKIE_SAMESITE'] = None
 
 # N.B. It may be important to limit the CORS origins so that the fetch API calls can
 # pass credentials through cookies (which requires an origin be specified and not be *)
